@@ -4,8 +4,8 @@ import { Box, Button, Typography, List, ListItem, Divider, Modal, TextField } fr
 import theme from '../Theme.ts';
 
 // Sample users and expenses
-const user1: User = { id: 1, name: 'Alice', userName: 'alice@example.com', balance: 50, password: '1' };
-const user2: User = { id: 2, name: 'Bob', userName: 'bob@example.com', balance: -30, password: '1' };
+export const user1: User = { id: 1, name: 'Alice', userName: 'alice@example.com', balance: 50, password: '1' };
+export const user2: User = { id: 2, name: 'Bob', userName: 'bob@example.com', balance: -30, password: '1' };
 const user3: User = { id: 3, name: 'Bam', userName: 'bam@example.com', balance: 2000, password: '1' };
 
 const expense1: Expense = {

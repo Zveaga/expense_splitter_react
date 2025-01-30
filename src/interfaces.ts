@@ -36,3 +36,9 @@ export interface DashboardSummary {
 	recentTransactions: Transaction[];	// List of recent transactions
 }
 
+export interface Event {
+	id: number;
+	name: string;
+	users: User[];
+	date: string;
+}
