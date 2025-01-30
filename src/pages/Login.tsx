@@ -27,7 +27,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, handleClose }) => {
 			onClose={handleClose}
 			sx={{ display: 'flex', alignItems: "center", justifyContent: "center" }}	
 		>
-			<Box sx={{ background: theme.palette.secondary.main, p: 4, boxShadow: 3, borderRadius: 2, width: 300 }}>
+			<Box sx={{ background: theme.palette.primary.main, p: 4, boxShadow: 3, borderRadius: 2, width: 300 }}>
         		<Typography variant="h6" gutterBottom>Login</Typography>
         		<TextField fullWidth label="Email" margin="normal" onChange={(e) => setUsername(e.target.value)} />
         		<TextField fullWidth label="Password" type="password" margin="normal" onChange={(e) => setPassword(e.target.value)} />

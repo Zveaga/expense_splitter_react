@@ -32,16 +32,20 @@ const Navigation: React.FC = () => {
 			  >
 				Dashboard
 			  </Button>
-			  <Button
-				onClick={() => setLoginModalOpen(true)}
-				sx={{
-				  color: theme.palette.common.white,
-				  "&:hover": { color: theme.palette.secondary.main },
-				}}
-			  >
-				Login
-			  </Button>
 			</Box>
+
+			<Box sx={{ marginLeft: 'auto' }}>
+				<Button
+					onClick={() => setLoginModalOpen(true)}
+					sx={{
+					color: theme.palette.common.white,
+					"&:hover": { color: theme.palette.secondary.main },
+					}}
+				>
+					Login
+				</Button>
+			</Box>
+
 		  </Toolbar>
 		</AppBar>
   
