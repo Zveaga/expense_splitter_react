@@ -21,6 +21,7 @@ const theme = createTheme({
 	typography: {
 	  fontFamily: 'Roboto, sans-serif', // Default font
 	},
+	spacing: 8,
   })
 
 export default theme;

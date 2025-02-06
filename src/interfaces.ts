@@ -38,7 +38,7 @@ export interface DashboardSummary {
 
 export interface Event {
 	id: number;
-	name: string;
+	description: string;
 	users: User[];
 	date: string;
 }
