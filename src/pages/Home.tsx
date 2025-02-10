@@ -40,6 +40,10 @@ const Home: React.FC = () => {
 	//----Event Handlers----//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
 		console.log(`Event (${event.description}) clicked!`);
+		e.preventDefault();
+		setSelectedEvent(event);
+
+
 	};
 	
 	//----UI Components----//
@@ -68,35 +72,109 @@ const Home: React.FC = () => {
 				<Typography>
 				{ event.description.charAt(0).toUpperCase() + event.description.slice(1) }
 				</Typography>
+
 			</Stack>
 		);
 	};
 
 
 	return (
-		<Container sx={{ padding: theme.spacing(3) }}>
-			<Box
-				sx={{
-					padding: '1em',
-					width: '50%',
-					height: '600px',
-					overflow: 'auto',
-					border: '2px solid #757575',
-					borderRadius: '1em',
-					mx: 'auto',
-				}}
-			>
-			<Typography sx={{ textAlign: 'center'}} variant="h4" gutterBottom >
-				Events
-			</Typography>
-				<Stack sx={{ }} gap={1}>
-					{events.map((event, i) => (
-						<EventLine key={i} event={event} />
-					))}
-				</Stack>
-			</Box>
+		<Container maxWidth={false} sx={{padding: theme.spacing(3) }}>
+			<Stack direction={'row'} spacing={1}>
+				{/*---Left column (event list)---*/}
+				<Box
+					sx={{
+						padding: '1em',
+						width: '300px',
+						height: '600px',
+						overflow: 'auto',
+						border: '2px solid #757575',
+						borderRadius: '0.5em',
+						mx: 'auto',
+					}}
+				>
+				<Typography sx={{ textAlign: 'center'}} variant="h4" gutterBottom >
+					Events
+				</Typography>
+					<Stack sx={{ }} gap={1}>
+						{events.map((event, i) => (
+							<EventLine key={i} event={event} />
+						))}
+					</Stack>
+				</Box>
+				{/*---Right column (event details)---*/}
+				<Box
+          			flex={1}
+          			padding="1em"
+          			// bgcolor={theme.palette.primary.dark}
+          		sx={{
+          			height: '600px',
+          			overflowY: 'auto',
+          			border: '2px solid #757575',
+          			borderRadius: '0.5em',
+          		}}
+        		>
+					{selectedEvent ? (
+						// <EventDetails event={selectedEvent} />
+						<Typography variant="h6" align="center">
+              				{`${selectedEvent.description} selected.`}
+						</Typography> 
+					) : (
+						<Typography variant="h6" align="center">
+              				Please select an event.
+						</Typography> 
+						
+					)}
+				</Box>
+			</Stack>
 		</Container>
-	);
+);
+	
+// return (
+//     <Container
+//       maxWidth={false}
+//       sx={{ padding: 1, margin: 2, width: '100%', height: '100vh' }}
+//     >
+//       <Box sx={{ display: 'flex', height: '100%' }}>
+//         {/* Left Section */}
+//         <Box
+//           sx={{
+//             padding: '1em',
+//             width: '30%',          
+//             height: '100%',
+//             overflowY: 'auto',
+//             border: '2px solid #757575',
+//             borderRadius: '1em',
+//           }}
+//         >
+//           <Typography sx={{ textAlign: 'center' }} variant="h4" gutterBottom>
+//             Events
+//           </Typography>
+//           <Stack gap={1}>
+//             {events.map((event, i) => (
+//               <div key={i}>{}</div>
+//             ))}
+//           </Stack>
+//         </Box>
+
+//         {/* Right Section */}
+//         <Box
+//           sx={{
+//             flex: 1,
+//             padding: '1em',
+//             height: '100%',
+//             overflowY: 'auto',
+//             border: '2px solid #757575',
+//             borderRadius: '1em',
+//           }}
+//         >
+//           <Typography variant="h6" align="center">
+//             Please select an event.
+//           </Typography>
+//         </Box>
+//       </Box>
+//     </Container>
+//   );
 };
 
 export default Home;
