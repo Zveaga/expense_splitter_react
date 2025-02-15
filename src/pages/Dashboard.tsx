@@ -26,6 +26,9 @@ const expense2: Expense = {
    date: '2025-01-27',
 };
 
+export const expenses = [expense1, expense2];
+// console.log('Expenses:\n' , expenses);
+
 // Samle example of recent transactions
 const sampleTransactions: Transaction[] = [
 	{

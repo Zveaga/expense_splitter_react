@@ -39,6 +39,7 @@ export interface DashboardSummary {
 export interface Event {
 	id: number;
 	description: string;
+	expenses: Expense[],
 	users: User[];
 	date: string;
 }

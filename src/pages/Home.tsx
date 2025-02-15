@@ -1,12 +1,50 @@
-import React, { use, useState } from 'react'
-import { Event } from '../interfaces';
-import { user1, user2 } from './Dashboard.tsx'
+import React, { use, useEffect, useState } from 'react'
+import { Event, Expense, User, } from '../interfaces';
 import { Container, Box, Stack, InputBase, Divider, Typography, useTheme,  } from '@mui/material';
+// import { user1, user2 } from './Dashboard.tsx'
+// import { expenses } from './Dashboard.tsx';
+
+const user1: User = {
+	id: 1,
+	name: 'Alice',
+	userName: 'alice@example.com',
+	balance: 50,
+	password: '1',
+};
+
+const user2: User = {
+	id: 2,
+	name: 'Bob',
+	userName: 'bob@example.com',
+	balance: -30,
+	password: '1',
+};
+
+const expense1: Expense = {
+   id: 1,
+   description: 'Dinner with friends',
+   amount: 50,
+   paidBy: user1,
+   participants: [user1, user2],
+   date: '2025-01-28',
+};
+
+const expense2: Expense = {
+   id: 2,
+   description: 'Uber ride',
+   amount: 20,
+   paidBy: user2,
+   participants: [user1, user2],
+   date: '2025-01-27',
+};
+
+export const expenses = [expense1, expense2,];
 
 const sampleEvents: Event[] = [
 	{
 		id: 1,
 		description: 'ski trip',
+		expenses: expenses,
 		users: [user1, user2],
 		date: '21-01-2024',
 
@@ -14,6 +52,7 @@ const sampleEvents: Event[] = [
 	{
 		id: 2,
 		description: 'greece',
+		expenses: [],
 		users: [user1, user2],
 		date: '21-01-2024',
 
@@ -21,32 +60,95 @@ const sampleEvents: Event[] = [
 	{
 		id: 3,
 		description: 'patagonia',
+		expenses: [],
 		users: [user1, user2],
 		date: '21-01-2024',
 	},
-
-
 ];
-
-
 
 const Home: React.FC = () => {
 	const theme = useTheme();
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [events, setEvents] = useState<Event[]>(sampleEvents);
 
-	console.log(events);
+	console.log('Events:\n', events);
 
 	//----Event Handlers----//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
 		console.log(`Event (${event.description}) clicked!`);
 		e.preventDefault();
 		setSelectedEvent(event);
+	};
 
-
+	const handleAddExpense = (newExpense: Expense) => {
+		if (!selectedEvent) {
+			return;
+		}
+		const updatedEvent = {
+			...selectedEvent,
+			expenses: [...selectedEvent.expenses, newExpense]
+		};
+		setSelectedEvent(updatedEvent);
+		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
 	};
 	
 	//----UI Components----//
+	
+	interface EventDetailsProps {
+		event: Event;
+		onAddExpense: (expense: Expense) => void;
+	}
+
+	const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense }) => {
+		const theme = useTheme();
+
+
+
+		return (
+			<Stack spacing={2}>
+				<Typography variant="h5" align="center">
+        			{event.description.charAt(0).toUpperCase() + event.description.slice(1)}
+      			</Typography>
+				<Typography align="center" color="textSecondary">
+        			Date: {event.date}
+      			</Typography>
+				<Divider/>
+				{/*------RENDER EXPENSES------*/}
+				<Typography variant='h6'>Current Expenses:</Typography>
+				{event.expenses.length ? (
+					event.expenses.map(expense => (
+						<Box
+							key={expense.id}
+							padding={1}
+							sx={{
+								border: '1px solid #ccc',
+								borderRadius: '4px',
+								backgroundColor: theme.palette.background.paper,
+							}}
+						>
+							<Typography variant="subtitle1">
+            					{expense.description} - ${expense.amount}
+            				</Typography>
+            				<Typography variant="caption">
+            					Paid by: {expense.paidBy.name} on {expense.date}
+            				</Typography>
+						</Box>
+					))
+				) : (
+					<Typography>No Expenses yet.</Typography>
+				)}
+				<Divider/>
+				{/*------ADD NEW EXPENSE------*/}
+
+				
+
+			
+			
+			</Stack>
+		);
+
+	}
+	
 	const EventLine: React.FC<{event: Event}> = ({event})  => {
 		return (
 			<Stack
@@ -77,7 +179,6 @@ const Home: React.FC = () => {
 		);
 	};
 
-
 	return (
 		<Container maxWidth={false} sx={{padding: theme.spacing(3) }}>
 			<Stack direction={'row'} spacing={1}>
@@ -104,21 +205,19 @@ const Home: React.FC = () => {
 				</Box>
 				{/*---Right column (event details)---*/}
 				<Box
-          			flex={1}
+          			// flex={1}
           			padding="1em"
           			// bgcolor={theme.palette.primary.dark}
           		sx={{
           			height: '600px',
           			overflowY: 'auto',
+					width: '600px',
           			border: '2px solid #757575',
           			borderRadius: '0.5em',
           		}}
         		>
 					{selectedEvent ? (
-						// <EventDetails event={selectedEvent} />
-						<Typography variant="h6" align="center">
-              				{`${selectedEvent.description} selected.`}
-						</Typography> 
+						<EventDetails event={selectedEvent} onAddExpense={handleAddExpense} />
 					) : (
 						<Typography variant="h6" align="center">
               				Please select an event.
@@ -128,53 +227,7 @@ const Home: React.FC = () => {
 				</Box>
 			</Stack>
 		</Container>
-);
-	
-// return (
-//     <Container
-//       maxWidth={false}
-//       sx={{ padding: 1, margin: 2, width: '100%', height: '100vh' }}
-//     >
-//       <Box sx={{ display: 'flex', height: '100%' }}>
-//         {/* Left Section */}
-//         <Box
-//           sx={{
-//             padding: '1em',
-//             width: '30%',          
-//             height: '100%',
-//             overflowY: 'auto',
-//             border: '2px solid #757575',
-//             borderRadius: '1em',
-//           }}
-//         >
-//           <Typography sx={{ textAlign: 'center' }} variant="h4" gutterBottom>
-//             Events
-//           </Typography>
-//           <Stack gap={1}>
-//             {events.map((event, i) => (
-//               <div key={i}>{}</div>
-//             ))}
-//           </Stack>
-//         </Box>
-
-//         {/* Right Section */}
-//         <Box
-//           sx={{
-//             flex: 1,
-//             padding: '1em',
-//             height: '100%',
-//             overflowY: 'auto',
-//             border: '2px solid #757575',
-//             borderRadius: '1em',
-//           }}
-//         >
-//           <Typography variant="h6" align="center">
-//             Please select an event.
-//           </Typography>
-//         </Box>
-//       </Box>
-//     </Container>
-//   );
+	);
 };
 
 export default Home;
