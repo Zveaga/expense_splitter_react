@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { Event, Expense, User, } from '../interfaces';
-import { Container, Box, Stack, InputBase, Divider, Typography, useTheme,  } from '@mui/material';
+import { Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
 // import { user1, user2 } from './Dashboard.tsx'
 // import { expenses } from './Dashboard.tsx';
 
@@ -24,7 +24,7 @@ const expense1: Expense = {
    id: 1,
    description: 'Dinner with friends',
    amount: 50,
-   paidBy: user1,
+   paidBy: user1.name,
    participants: [user1, user2],
    date: '2025-01-28',
 };
@@ -33,7 +33,7 @@ const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
    amount: 20,
-   paidBy: user2,
+   paidBy: user2.name,
    participants: [user1, user2],
    date: '2025-01-27',
 };
@@ -69,7 +69,7 @@ const sampleEvents: Event[] = [
 const Home: React.FC = () => {
 	const theme = useTheme();
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-	const [events, setEvents] = useState<Event[]>(sampleEvents);
+	const [events, setEvents] = useState<Event[]>(sampleEvents)
 
 	console.log('Events:\n', events);
 
@@ -92,7 +92,7 @@ const Home: React.FC = () => {
 		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
 	};
 	
-	//----UI Components----//
+	//----UI child components of Home component----//
 	
 	interface EventDetailsProps {
 		event: Event;
@@ -101,8 +101,39 @@ const Home: React.FC = () => {
 
 	const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense }) => {
 		const theme = useTheme();
+		const [description, setDescription] = useState('');
+		const [amount, setAmount] = useState('');
+		const [date, setDate] = useState('');
+		const [paidBy, setPaidBy] = useState('');
 
+		const handleAddExpense = () => {
+			if (!paidBy) {
+				alert('Please select who paid for this expense.');
+				return;
+			}
 
+			const tempId =
+				event.expenses.length > 0
+				? Math.max(...event.expenses.map(expense => expense.id)) + 1
+				: 1;
+			
+			const newExpense = {
+				id: tempId,
+   				description: description,
+   				amount: parseFloat(amount),
+    			paidBy: paidBy,
+   				participants: event.users, //!!!
+   				date: date,
+			};
+
+			onAddExpense(newExpense);
+
+			setDescription('');
+			setAmount('');
+			setDate('');
+			setPaidBy('');
+
+		};
 
 		return (
 			<Stack spacing={2}>
@@ -127,10 +158,10 @@ const Home: React.FC = () => {
 							}}
 						>
 							<Typography variant="subtitle1">
-            					{expense.description} - ${expense.amount}
+            					{expense.description.charAt(0).toUpperCase() + expense.description.slice(1)} - ${expense.amount}
             				</Typography>
             				<Typography variant="caption">
-            					Paid by: {expense.paidBy.name} on {expense.date}
+            					Paid by: {expense.paidBy} on {expense.date}
             				</Typography>
 						</Box>
 					))
@@ -140,7 +171,52 @@ const Home: React.FC = () => {
 				<Divider/>
 				{/*------ADD NEW EXPENSE------*/}
 
-				
+				<Typography variant="h6">Add New Expense:</Typography>
+      			<Stack spacing={2}>
+      			  <TextField
+      			    label="Description"
+      			    value={description}
+      			    onChange={(e) => setDescription(e.target.value)}
+      			    fullWidth
+      			  />
+      			  <TextField
+      			    label="Amount"
+      			    type="number"
+      			    value={amount}
+      			    onChange={(e) => setAmount(e.target.value)}
+      			    fullWidth
+      			  />
+      			  <TextField
+      			    label="Date"
+      			    type="date"
+      			    value={date}
+      			    onChange={(e) => setDate(e.target.value)}
+      			    InputLabelProps={{
+      			      shrink: true,
+      			    }}
+      			    fullWidth
+      			  />
+      			  <FormControl fullWidth>
+      			    <InputLabel id="paid-by-label">Paid By</InputLabel>
+      			    <Select
+      			      labelId="paid-by-label"
+      			      value={paidBy}
+      			      label="Paid By"
+      			      onChange={(e) => setPaidBy((e.target.value))}
+      			    >
+      			      {event.users.map((user) => (
+      			        <MenuItem key={user.id} value={user.name}>
+      			          {user.name}
+      			        </MenuItem>
+      			      ))}
+      			    </Select>
+      			  </FormControl>
+      			  <Button variant="contained" color="primary" onClick={handleAddExpense}>
+      			    Add Expense
+      			  </Button>
+      			</Stack>
+				  
+      			<Divider />
 
 			
 			
