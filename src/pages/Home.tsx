@@ -24,7 +24,7 @@ const expense1: Expense = {
    id: 1,
    description: 'Dinner',
    amount: 50,
-   paidBy: user1.name,
+   paidBy: [user1.name],
    participants: [user1, user2],
    date: '2025-01-28',
 };
@@ -33,7 +33,7 @@ const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
    amount: 20,
-   paidBy: user2.name,
+   paidBy: [user2.name],
    participants: [user1, user2],
    date: '2025-01-27',
 };
@@ -109,13 +109,13 @@ const Home: React.FC = () => {
 		const [description, setDescription] = useState('');
 		const [amount, setAmount] = useState('');
 		const [date, setDate] = useState('');
-		const [paidBy, setPaidBy] = useState('');
+		const [paidBy, setPaidBy] = useState([]);
 
 		const handleAddExpense = () => {
-			if (!paidBy) {
-				alert('Please select who paid for this expense.');
-				return;
-			}
+			// if (!paidBy || !description || !amount || !date) {
+			// 	// alert('Please select who paid for this expense.');
+			// 	return;
+			// }
 
 			const tempId =
 				event.expenses.length > 0
@@ -136,7 +136,7 @@ const Home: React.FC = () => {
 			setDescription('');
 			setAmount('');
 			setDate('');
-			setPaidBy('');
+			setPaidBy([]);
 
 		};
 
@@ -156,6 +156,10 @@ const Home: React.FC = () => {
 
 		const handleCloseNewExpenseModal = () => {
 			setOpenNewExpenseModal(false);
+		};
+
+		const handleAddUserToExpense = (e) => {
+			setPaidBy(e.target.value);
 		};
 
 		return (
@@ -225,7 +229,7 @@ const Home: React.FC = () => {
 								Expense Details
 						  	</Typography>
 						  	<Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
-						  	<Typography variant="body1">Paid by: {selectedExpense.paidBy}</Typography>
+						  	<Typography variant="body1">Paid by: {selectedExpense.paidBy.join(', ')}</Typography>
 						  	<Typography variant="body1">Date: {selectedExpense.date}</Typography>
 						  	<Box sx={{ marginTop: 2, textAlign: "center" }}>
 								<Button variant="contained" onClick={handleCloseExpenseModal}>Close</Button>
@@ -242,7 +246,7 @@ const Home: React.FC = () => {
 					variant='contained'
 					color="primary"
 					// fullWidth
-					sx={{ textTransform: 'none' }}
+					// sx={{ textTransform: 'none' }}
 				>
 					New Expense
 				</Button>
@@ -287,14 +291,19 @@ const Home: React.FC = () => {
       					    }}
       					    fullWidth
       					  />
+
+
       					  <FormControl fullWidth>
       					    <InputLabel id="paid-by-label">Paid By</InputLabel>
       					    <Select
-      					      labelId="paid-by-label"
-      					      value={paidBy}
-      					      label="Paid By"
-      					      onChange={(e) => setPaidBy((e.target.value))}
-      					    >
+								labelId="paid-by-label"
+								multiple
+								value={paidBy}
+								label="Paid By"
+      					      	// onChange={(e) => setPaidBy(e.target.value)}
+      					      	onChange={handleAddUserToExpense}
+								renderValue={(selected) => selected.join(', ')}
+							>
       					      {event.users.map((user) => (
       					        <MenuItem key={user.id} value={user.name}>
       					          {user.name}
@@ -302,7 +311,17 @@ const Home: React.FC = () => {
       					      ))}
       					    </Select>
       					  </FormControl>
-      					  <Button variant="contained" color="primary" onClick={handleAddExpense}>
+
+
+      					  <Button
+								onClick={handleAddExpense}
+						  		sx={{
+									backgroundColor: theme.palette.primary.dark,
+									// '&:hover': { backgroundColor: theme.palette.primary.main }
+								}}
+								variant="contained"
+								color="primary"
+							>
       					    Add Expense
       					  </Button>
       					</Stack>

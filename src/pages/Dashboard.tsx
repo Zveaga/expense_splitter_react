@@ -12,7 +12,7 @@ const expense1: Expense = {
    id: 1,
    description: 'Dinner with friends',
    amount: 50,
-   paidBy: user1.name,
+   paidBy: [user1.name],
    participants: [user1, user2],
    date: '2025-01-28',
 };
@@ -21,7 +21,7 @@ const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
    amount: 20,
-   paidBy: user2.name,
+   paidBy: [user2.name],
    participants: [user1, user2],
    date: '2025-01-27',
 };
