@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { Event, Expense, User, } from '../interfaces';
-import { Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
+import { Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
 // import { user1, user2 } from './Dashboard.tsx'
 // import { expenses } from './Dashboard.tsx';
 
@@ -22,7 +22,7 @@ const user2: User = {
 
 const expense1: Expense = {
    id: 1,
-   description: 'Dinner with friends',
+   description: 'Dinner',
    amount: 50,
    paidBy: user1.name,
    participants: [user1, user2],
@@ -66,6 +66,8 @@ const sampleEvents: Event[] = [
 	},
 ];
 
+
+///////////////////////////////////////////////////////////////////////////
 const Home: React.FC = () => {
 	const theme = useTheme();
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -92,7 +94,7 @@ const Home: React.FC = () => {
 		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
 	};
 	
-	//----UI child components of Home component----//
+	//----UI child components of Home ----//
 	
 	interface EventDetailsProps {
 		event: Event;
@@ -101,6 +103,8 @@ const Home: React.FC = () => {
 
 	const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense }) => {
 		const theme = useTheme();
+		const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+		const [isAddingExpense, setIsAddingExpense] = useState(false);
 		const [description, setDescription] = useState('');
 		const [amount, setAmount] = useState('');
 		const [date, setDate] = useState('');
@@ -135,6 +139,16 @@ const Home: React.FC = () => {
 
 		};
 
+		const handleExpenseClick = (expense: Expense) => {
+			setSelectedExpense(expense);
+			setIsAddingExpense(true);
+		};
+
+		const handleCloseExpenseModal = () => {
+			setSelectedExpense(null);
+			setIsAddingExpense(false);
+		};
+
 		return (
 			<Stack spacing={2}>
 				<Typography variant="h5" align="center">
@@ -144,31 +158,74 @@ const Home: React.FC = () => {
         			Date: {event.date}
       			</Typography>
 				<Divider/>
+
 				{/*------RENDER EXPENSES------*/}
+				
 				<Typography variant='h6'>Current Expenses:</Typography>
 				{event.expenses.length ? (
 					event.expenses.map(expense => (
 						<Box
 							key={expense.id}
+							onClick={() => handleExpenseClick(expense)}
 							padding={1}
 							sx={{
 								border: '1px solid #ccc',
 								borderRadius: '4px',
 								backgroundColor: theme.palette.background.paper,
+								cursor: 'pointer',
+								transition: 'padding-left ease-in-out 0.3s, padding-right ease-in-out 0.3s, border-radius ease-in-out 0.3s, background-color ease-in-out 0.3s',
+								'&:hover': {
+								  bgcolor: theme.palette.primary.dark,
+ 								  paddingLeft: '1em',
+								  paddingRight: '0.02em',
+								},
 							}}
 						>
 							<Typography variant="subtitle1">
-            					{expense.description.charAt(0).toUpperCase() + expense.description.slice(1)} - ${expense.amount}
+            					{expense.description.charAt(0).toUpperCase() + expense.description.slice(1)}
             				</Typography>
-            				<Typography variant="caption">
+            				{/* <Typography variant="caption">
             					Paid by: {expense.paidBy} on {expense.date}
-            				</Typography>
+            				</Typography> */}
 						</Box>
 					))
 				) : (
 					<Typography>No Expenses yet.</Typography>
 				)}
 				<Divider/>
+				
+				{/*------EXPENSE DETAILS MODAL------*/}
+
+				<Modal
+					open={isAddingExpense}
+					onClose={handleCloseExpenseModal}
+					sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}
+				>
+					<Box
+					  sx={{
+						backgroundColor: theme.palette.primary.main,
+						padding: 3,
+						borderRadius: 2,
+						width: "80%",
+						maxWidth: 400,
+					  }}
+					>
+					  {selectedExpense && (
+						<>
+						  <Typography variant="h5" gutterBottom>
+							Expense Details
+						  </Typography>
+						  <Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
+						  <Typography variant="body1">Paid by: {selectedExpense.paidBy}</Typography>
+						  <Typography variant="body1">Date: {selectedExpense.date}</Typography>
+						  <Box sx={{ marginTop: 2, textAlign: "center" }}>
+							<Button variant="contained" onClick={handleCloseExpenseModal}>Close</Button>
+						  </Box>
+						</>
+					  )}
+					</Box>
+				</Modal>
+
 				{/*------ADD NEW EXPENSE------*/}
 
 				<Typography variant="h6">Add New Expense:</Typography>
@@ -241,7 +298,7 @@ const Home: React.FC = () => {
 					transition: 'padding-left ease-in-out 0.3s, padding-right ease-in-out 0.3s, border-radius ease-in-out 0.3s, background-color ease-in-out 0.3s',
 					'&:hover': {
 					  bgcolor: theme.palette.primary.dark,
-					  borderRadius: '2em',
+					//   borderRadius: '2em',
 					  paddingLeft: '1em',
 					  paddingRight: '0.02em',
 					},
@@ -263,7 +320,7 @@ const Home: React.FC = () => {
 					sx={{
 						padding: '1em',
 						width: '300px',
-						height: '600px',
+						height: '800px',
 						overflow: 'auto',
 						border: '2px solid #757575',
 						borderRadius: '0.5em',
@@ -285,9 +342,9 @@ const Home: React.FC = () => {
           			padding="1em"
           			// bgcolor={theme.palette.primary.dark}
           		sx={{
-          			height: '600px',
+          			height: '800px',
           			overflowY: 'auto',
-					width: '600px',
+					width: '800px',
           			border: '2px solid #757575',
           			borderRadius: '0.5em',
           		}}
