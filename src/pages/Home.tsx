@@ -104,7 +104,8 @@ const Home: React.FC = () => {
 	const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense }) => {
 		const theme = useTheme();
 		const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
-		const [isAddingExpense, setIsAddingExpense] = useState(false);
+		const [openNewExpenseModal, setOpenNewExpenseModal] = useState(false);
+		const [openExpenseModal, setOpenExpenseModal] = useState(false);
 		const [description, setDescription] = useState('');
 		const [amount, setAmount] = useState('');
 		const [date, setDate] = useState('');
@@ -141,12 +142,20 @@ const Home: React.FC = () => {
 
 		const handleExpenseClick = (expense: Expense) => {
 			setSelectedExpense(expense);
-			setIsAddingExpense(true);
+			setOpenExpenseModal(true);
 		};
 
 		const handleCloseExpenseModal = () => {
 			setSelectedExpense(null);
-			setIsAddingExpense(false);
+			setOpenExpenseModal(false);
+		};
+
+		const handleAddNewExpense = () => {
+			setOpenNewExpenseModal(true);
+		};
+
+		const handleCloseNewExpenseModal = () => {
+			setOpenNewExpenseModal(false);
 		};
 
 		return (
@@ -154,14 +163,14 @@ const Home: React.FC = () => {
 				<Typography variant="h5" align="center">
         			{event.description.charAt(0).toUpperCase() + event.description.slice(1)}
       			</Typography>
-				<Typography align="center" color="textSecondary">
+				{/* <Typography align="center" color="textSecondary">
         			Date: {event.date}
-      			</Typography>
+      			</Typography> */}
 				<Divider/>
 
 				{/*------RENDER EXPENSES------*/}
 				
-				<Typography variant='h6'>Current Expenses:</Typography>
+				<Typography variant='h6' align='center'>Current Expenses</Typography>
 				{event.expenses.length ? (
 					event.expenses.map(expense => (
 						<Box
@@ -197,30 +206,30 @@ const Home: React.FC = () => {
 				{/*------EXPENSE DETAILS MODAL------*/}
 
 				<Modal
-					open={isAddingExpense}
+					open={openExpenseModal}
 					onClose={handleCloseExpenseModal}
 					sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}
 				>
 					<Box
-					  sx={{
-						backgroundColor: theme.palette.primary.main,
-						padding: 3,
-						borderRadius: 2,
-						width: "80%",
-						maxWidth: 400,
-					  }}
+						sx={{
+							backgroundColor: theme.palette.primary.main,
+							padding: 3,
+							borderRadius: 2,
+							width: "80%",
+							maxWidth: 400,
+						}}
 					>
 					  {selectedExpense && (
 						<>
-						  <Typography variant="h5" gutterBottom>
-							Expense Details
-						  </Typography>
-						  <Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
-						  <Typography variant="body1">Paid by: {selectedExpense.paidBy}</Typography>
-						  <Typography variant="body1">Date: {selectedExpense.date}</Typography>
-						  <Box sx={{ marginTop: 2, textAlign: "center" }}>
-							<Button variant="contained" onClick={handleCloseExpenseModal}>Close</Button>
-						  </Box>
+						  	<Typography variant="h5" gutterBottom>
+								Expense Details
+						  	</Typography>
+						  	<Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
+						  	<Typography variant="body1">Paid by: {selectedExpense.paidBy}</Typography>
+						  	<Typography variant="body1">Date: {selectedExpense.date}</Typography>
+						  	<Box sx={{ marginTop: 2, textAlign: "center" }}>
+								<Button variant="contained" onClick={handleCloseExpenseModal}>Close</Button>
+						  	</Box>
 						</>
 					  )}
 					</Box>
@@ -228,55 +237,80 @@ const Home: React.FC = () => {
 
 				{/*------ADD NEW EXPENSE------*/}
 
-				<Typography variant="h6">Add New Expense:</Typography>
-      			<Stack spacing={2}>
-      			  <TextField
-      			    label="Description"
-      			    value={description}
-      			    onChange={(e) => setDescription(e.target.value)}
-      			    fullWidth
-      			  />
-      			  <TextField
-      			    label="Amount"
-      			    type="number"
-      			    value={amount}
-      			    onChange={(e) => setAmount(e.target.value)}
-      			    fullWidth
-      			  />
-      			  <TextField
-      			    label="Date"
-      			    type="date"
-      			    value={date}
-      			    onChange={(e) => setDate(e.target.value)}
-      			    InputLabelProps={{
-      			      shrink: true,
-      			    }}
-      			    fullWidth
-      			  />
-      			  <FormControl fullWidth>
-      			    <InputLabel id="paid-by-label">Paid By</InputLabel>
-      			    <Select
-      			      labelId="paid-by-label"
-      			      value={paidBy}
-      			      label="Paid By"
-      			      onChange={(e) => setPaidBy((e.target.value))}
-      			    >
-      			      {event.users.map((user) => (
-      			        <MenuItem key={user.id} value={user.name}>
-      			          {user.name}
-      			        </MenuItem>
-      			      ))}
-      			    </Select>
-      			  </FormControl>
-      			  <Button variant="contained" color="primary" onClick={handleAddExpense}>
-      			    Add Expense
-      			  </Button>
-      			</Stack>
-				  
+				<Button
+					onClick={handleAddNewExpense}
+					variant='contained'
+					color="primary"
+					// fullWidth
+					sx={{ textTransform: 'none' }}
+				>
+					New Expense
+				</Button>
+
+				<Modal
+					open={openNewExpenseModal}
+					onClose={handleCloseNewExpenseModal}
+					sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}
+				>
+					<Box
+						sx={{
+							backgroundColor: theme.palette.primary.main,
+							padding: 3,
+							borderRadius: 2,
+							width: "80%",
+							maxWidth: 400,
+						}}
+					>
+
+						<Typography variant="h6">Add New Expense:</Typography>
+      					<Stack spacing={2}>
+      					  <TextField
+      					    label="Description"
+      					    value={description}
+      					    onChange={(e) => setDescription(e.target.value)}
+      					    fullWidth
+      					  />
+      					  <TextField
+      					    label="Amount"
+      					    type="number"
+      					    value={amount}
+      					    onChange={(e) => setAmount(e.target.value)}
+      					    fullWidth
+      					  />
+      					  <TextField
+      					    label="Date"
+      					    type="date"
+      					    value={date}
+      					    onChange={(e) => setDate(e.target.value)}
+      					    InputLabelProps={{
+      					      shrink: true,
+      					    }}
+      					    fullWidth
+      					  />
+      					  <FormControl fullWidth>
+      					    <InputLabel id="paid-by-label">Paid By</InputLabel>
+      					    <Select
+      					      labelId="paid-by-label"
+      					      value={paidBy}
+      					      label="Paid By"
+      					      onChange={(e) => setPaidBy((e.target.value))}
+      					    >
+      					      {event.users.map((user) => (
+      					        <MenuItem key={user.id} value={user.name}>
+      					          {user.name}
+      					        </MenuItem>
+      					      ))}
+      					    </Select>
+      					  </FormControl>
+      					  <Button variant="contained" color="primary" onClick={handleAddExpense}>
+      					    Add Expense
+      					  </Button>
+      					</Stack>
+					</Box>
+				</Modal>
+
       			<Divider />
 
-			
-			
 			</Stack>
 		);
 
