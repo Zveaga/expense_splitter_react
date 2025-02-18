@@ -20,6 +20,8 @@ const user2: User = {
 	password: '1',
 };
 
+const users = [user1, user2];
+
 const expense1: Expense = {
    id: 1,
    description: 'Dinner',
@@ -72,14 +74,26 @@ const Home: React.FC = () => {
 	const theme = useTheme();
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [events, setEvents] = useState<Event[]>(sampleEvents)
+	const [openNewEventModal, setOpenNewEventModal] = useState(false);
+	const [eventName, setEventName] = useState('');
+	const [participants, setParticipants] = useState([]);
+	const [date, setDate] = useState('');
 
 	console.log('Events:\n', events);
 
-	//----Event Handlers----//
+	//------------Event Handlers------------//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
 		console.log(`Event (${event.description}) clicked!`);
 		e.preventDefault();
 		setSelectedEvent(event);
+	};
+
+	const handleNewEventClick = () => {
+		setOpenNewEventModal(true);
+	};
+
+	const handleCloseNewEventModal = () => {
+		setOpenNewEventModal(false);
 	};
 
 	const handleAddExpense = (newExpense: Expense) => {
@@ -93,8 +107,29 @@ const Home: React.FC = () => {
 		setSelectedEvent(updatedEvent);
 		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
 	};
+
+	const handleAddEvent = () => {
+		const tempId =
+			events.length > 0
+			? Math.max(...events.map(event => event.id)) + 1
+			: 1;
+
+			const newEvent = {
+			id: tempId,
+			description: eventName,
+			expenses: [],
+			users: participants,
+			date: date,
+		};
+		setEvents(prevEvents => [...prevEvents, newEvent]);
+	};
+
+
+	const handleAddUserToEvent = (e) => {
+		setParticipants(e.target.value);
+	};
 	
-	//----UI child components of Home ----//
+	//------------UI child components of Home ------------//
 	
 	interface EventDetailsProps {
 		event: Event;
@@ -112,10 +147,10 @@ const Home: React.FC = () => {
 		const [paidBy, setPaidBy] = useState([]);
 
 		const handleAddExpense = () => {
-			// if (!paidBy || !description || !amount || !date) {
-			// 	// alert('Please select who paid for this expense.');
-			// 	return;
-			// }
+			if (!paidBy || !description || !amount || !date) {
+				// alert('Please select who paid for this expense.');
+				return;
+			}
 
 			const tempId =
 				event.expenses.length > 0
@@ -132,7 +167,6 @@ const Home: React.FC = () => {
 			};
 
 			onAddExpense(newExpense);
-
 			setDescription('');
 			setAmount('');
 			setDate('');
@@ -162,6 +196,8 @@ const Home: React.FC = () => {
 			setPaidBy(e.target.value);
 		};
 
+
+
 		return (
 			<Stack spacing={2}>
 				<Typography variant="h5" align="center">
@@ -172,7 +208,7 @@ const Home: React.FC = () => {
       			</Typography> */}
 				<Divider/>
 
-				{/*------RENDER EXPENSES------*/}
+				{/*------------RENDER EXPENSES------------*/}
 				
 				<Typography variant='h6' align='center'>Current Expenses</Typography>
 				{event.expenses.length ? (
@@ -194,7 +230,7 @@ const Home: React.FC = () => {
 								},
 							}}
 						>
-							<Typography variant="subtitle1">
+							<Typography variant="subtitle1" align='center'>
             					{expense.description.charAt(0).toUpperCase() + expense.description.slice(1)}
             				</Typography>
             				{/* <Typography variant="caption">
@@ -207,7 +243,7 @@ const Home: React.FC = () => {
 				)}
 				<Divider/>
 				
-				{/*------EXPENSE DETAILS MODAL------*/}
+				{/*------------EXPENSE DETAILS MODAL------------*/}
 
 				<Modal
 					open={openExpenseModal}
@@ -239,7 +275,7 @@ const Home: React.FC = () => {
 					</Box>
 				</Modal>
 
-				{/*------ADD NEW EXPENSE------*/}
+				{/*------------ADD NEW EXPENSE------------*/}
 
 				<Button
 					onClick={handleAddNewExpense}
@@ -378,16 +414,101 @@ const Home: React.FC = () => {
 						border: '2px solid #757575',
 						borderRadius: '0.5em',
 						mx: 'auto',
+						
 					}}
 				>
-				<Typography sx={{ textAlign: 'center'}} variant="h4" gutterBottom >
-					Events
-				</Typography>
-					<Stack sx={{ }} gap={1}>
+					<Typography sx={{ textAlign: 'center'}} variant="h4" gutterBottom >
+						Events
+					</Typography>
+
+					<Stack sx={{ '& > *': { minHeight: '30px' } }} gap={1}>
 						{events.map((event, i) => (
 							<EventLine key={i} event={event} />
 						))}
 					</Stack>
+
+					<Divider sx={{ my: 2 }} />
+						
+					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+					  	<Button
+					  	  	onClick={handleNewEventClick}
+					  	  	variant='contained'
+					  	  	color="primary"
+					  	  	sx={{ textTransform: 'none' }}
+							fullWidth
+
+						>
+					  	  New Event
+					  	</Button>
+					</Box>
+
+					<Modal
+						open={openNewEventModal}
+						onClose={handleCloseNewEventModal}
+						sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}
+					>
+						<Box
+							sx={{
+								backgroundColor: theme.palette.primary.main,
+								padding: 3,
+								borderRadius: 2,
+								width: "80%",
+								maxWidth: 400,
+							}}
+						>
+
+							<Typography variant="h6">Add New Event:</Typography>
+							<Stack spacing={2}>
+							<TextField
+								label="Name"
+								value={eventName}
+								onChange={(e) => setEventName(e.target.value)}
+								fullWidth
+							/>
+							<TextField
+								label="Date"
+								type="date"
+								value={date}
+								onChange={(e) => setDate(e.target.value)}
+								InputLabelProps={{
+								shrink: true,
+								}}
+								fullWidth
+							/>
+							<FormControl fullWidth>
+								<InputLabel id="participants-label">Participants</InputLabel>
+								<Select
+									labelId="participants-label"
+									multiple
+									value={participants}
+									label="Paid By"
+									// onChange={(e) => setPaidBy(e.target.value)}
+									onChange={handleAddUserToEvent}
+									renderValue={(selected) => selected.join(', ')}
+								>
+								{users.map((user) => (
+									<MenuItem key={user.id} value={user.name}>
+									{user.name}
+									</MenuItem>
+								))}
+								</Select>
+							</FormControl>
+							<Button
+									onClick={handleAddEvent}
+									sx={{
+										backgroundColor: theme.palette.primary.dark,
+										// '&:hover': { backgroundColor: theme.palette.primary.main }
+									}}
+									variant="contained"
+									color="primary"
+								>
+								Add Event
+							</Button>
+							</Stack>
+						</Box>
+					</Modal>
+
+
 				</Box>
 				{/*---Right column (event details)---*/}
 				<Box
