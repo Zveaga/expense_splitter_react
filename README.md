@@ -4,7 +4,7 @@ The goal is to build a full-stack app that helps you split group expenses — pe
 
 ## 🚀 Planned Features
 
-➕ Add and manage expenses
-👥 Create and manage groups
-🔄 Automatically calculate who owes who
-📊 Clean dashboard with real-time updates
+➕ Add and manage expenses <br>
+👥 Create and manage groups <br>
+🔄 Automatically calculate who owes who <br>
+📊 Clean dashboard with real-time updates <br>
