@@ -1,5 +1,5 @@
 import React, { use, useEffect, useState } from 'react'
-import { Event, Expense, User, } from '../interfaces';
+import { Event, Expense, User, } from '../types/interfaces';
 import { Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
 // import { user1, user2 } from './Dashboard.tsx'
 // import { expenses } from './Dashboard.tsx';

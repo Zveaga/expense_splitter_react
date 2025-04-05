@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Box, useTheme } from '@mui/material';
-import LoginModal from '../pages/Login.tsx'
+import LoginModal from '../components/modals/LoginModal.tsx'
 
 const Navigation: React.FC = () => {
 	const [loginModalOpen, setLoginModalOpen] = useState(false);
-	const theme = useTheme(); // Get the current theme
+	const theme = useTheme(); 
 	
 	return (
 	  <>

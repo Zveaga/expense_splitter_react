@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Expense, User, Transaction } from '../interfaces' 
+import { Expense, User, Transaction } from '../types/interfaces' 
 import { Box, Button, Typography, List, ListItem, Divider, Modal, TextField } from "@mui/material";
-import theme from '../Theme.ts';
+import theme from '../styles/Theme.ts';
 
 // Sample users and expenses
 export const user1: User = { id: 1, name: 'Alice', userName: 'alice@example.com', balance: 50, password: '1' };

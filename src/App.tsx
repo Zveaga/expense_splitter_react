@@ -1,14 +1,15 @@
 // import logo from './logo.svg';
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+// import './ App.css';
+import './styles/App.css';
 // import Button from "@mui/material/Button";
 import Navigation from './components/Navigation.tsx';
-import Login from './pages/Login.tsx';
+// import Login from './pages/Login.tsx';
 import Home from './pages/Home.tsx';
 import Dashboard from './pages/Dashboard.tsx';
-import LoginModal from './pages/Login.tsx';
-import theme from './Theme.ts'
+// import LoginModal from './pages/Login.tsx';
+import theme from './styles/Theme.ts'
 import { ThemeProvider, CssBaseline } from "@mui/material";
 
 const App: React.FC = () => {

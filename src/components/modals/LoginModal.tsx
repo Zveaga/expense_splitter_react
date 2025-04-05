@@ -13,7 +13,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, handleClose }) => {
 
 
 	const handleLogin = () => {
-		if (username === 'rar' && password === '11') {
+		if (username === '1' && password === '1') {		// ! To be replaced with real pass check
 			alert('Login successful!');
 			handleClose();
 		} else {
