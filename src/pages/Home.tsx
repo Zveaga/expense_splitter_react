@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { Event, Expense, User, } from '../types/interfaces';
-import { Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
+import { Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
 // import { user1, user2 } from './Dashboard.tsx'
 // import { expenses } from './Dashboard.tsx';
 
@@ -287,6 +287,8 @@ const Home: React.FC = () => {
 					New Expense
 				</Button>
 
+
+
 				<Modal
 					open={openNewExpenseModal}
 					onClose={handleCloseNewExpenseModal}
@@ -365,6 +367,72 @@ const Home: React.FC = () => {
 				</Modal>
 
       			<Divider />
+
+				{/*-------------TRIP SUMMARY-------------*/}
+				<Stack spacing={2} mt={4}>
+					<Typography variant='h5' align='center'>Trip Summary</Typography>
+
+					{/*----Total spent----*/}
+					{/* <Paper elevation={2} sx={{ padding: 2 }}>
+						<Typography variant="subtitle1">Total Spent: 1000</Typography>
+						<Typography variant="h6">1000</Typography>
+					</Paper> */}
+					<Box
+						sx={{
+						backgroundColor: theme.palette.background.paper,
+						padding: 2,
+						borderRadius: 2,
+						border: `1px solid ${theme.palette.divider}`,
+						}}
+					>
+						<Typography variant="h7">
+							Total Spent: <strong>10000</strong>
+						</Typography>
+
+						{/* <Box display="flex" alignItems="center" gap={5}>
+							<Typography variant="h6">Total Spent:</Typography>
+							<Typography variant="h6"> <strong>10000</strong></Typography>
+						</Box> */}
+					</Box>
+
+  					{/*----Individual Totals----*/}
+					<Box
+						sx={{
+						backgroundColor: theme.palette.background.paper,
+						padding: 2,
+						borderRadius: 2,
+						border: `1px solid ${theme.palette.divider}`,
+						}}
+					>
+						<Typography variant="h7"> Individual Totals:</Typography>
+						<Stack spacing={1} mt={1}>
+
+						</Stack>
+
+						{/* <Box display="flex" alignItems="center" gap={5}>
+							<Typography variant="h6">Total Spent:</Typography>
+							<Typography variant="h6"> <strong>10000</strong></Typography>
+						</Box> */}
+					</Box>
+  					{/*----Who Owes Whom----*/}
+				
+					  <Box
+						sx={{
+						backgroundColor: theme.palette.background.paper,
+						padding: 2,
+						borderRadius: 2,
+						border: `1px solid ${theme.palette.divider}`,
+						}}
+					>
+						<Typography variant="h7"> Balances:</Typography>
+						<Stack spacing={1} mt={1}>
+							
+						</Stack>
+					</Box>
+				
+				
+				
+				</Stack>
 
 			</Stack>
 		);
