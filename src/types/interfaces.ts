@@ -13,7 +13,7 @@ export interface Expense {
 	id: number;					
 	description: string; 				// e.g., "Dinner with friends"
 	amount: number; 					// Total amount of the expense
-	paidBy: string[];					// The of the user who paid the expense
+	paidBy: number[];					// The of the user who paid the expense
 	participants: User[];				// The users involved in the expense
 	date: string;						// The date when the expense was made
 }

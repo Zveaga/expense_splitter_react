@@ -1,6 +1,8 @@
 import React, { use, useEffect, useState } from 'react'
 import { Event, Expense, User, } from '../types/interfaces';
 import { Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
+import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
+
 // import { user1, user2 } from './Dashboard.tsx'
 // import { expenses } from './Dashboard.tsx';
 
@@ -26,7 +28,7 @@ const expense1: Expense = {
    id: 1,
    description: 'Dinner',
    amount: 50,
-   paidBy: [user1.name],
+   paidBy: [user1.id],
    participants: [user1, user2],
    date: '2025-01-28',
 };
@@ -35,7 +37,7 @@ const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
    amount: 20,
-   paidBy: [user2.name],
+   paidBy: [user2.id],
    participants: [user1, user2],
    date: '2025-01-27',
 };
@@ -79,11 +81,11 @@ const Home: React.FC = () => {
 	const [participants, setParticipants] = useState([]);
 	const [date, setDate] = useState('');
 
-	console.log('Events:\n', events);
+	// console.log('Events:\n', events);
 
 	//------------Event Handlers------------//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
-		console.log(`Event (${event.description}) clicked!`);
+		// console.log(`Event (${event.description}) clicked!`);
 		e.preventDefault();
 		setSelectedEvent(event);
 	};
@@ -144,11 +146,10 @@ const Home: React.FC = () => {
 		const [description, setDescription] = useState('');
 		const [amount, setAmount] = useState('');
 		const [date, setDate] = useState('');
-		const [paidBy, setPaidBy] = useState([]);
+		const [paidBy, setPaidBy] = useState<number[]>([]);
 
 		const handleAddExpense = () => {
 			if (!paidBy || !description || !amount || !date) {
-				// alert('Please select who paid for this expense.');
 				return;
 			}
 
@@ -165,6 +166,8 @@ const Home: React.FC = () => {
    				participants: event.users, //!!!
    				date: date,
 			};
+
+			console.log(newExpense);
 
 			onAddExpense(newExpense);
 			setDescription('');
@@ -265,7 +268,10 @@ const Home: React.FC = () => {
 								Expense Details
 						  	</Typography>
 						  	<Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
-						  	<Typography variant="body1">Paid by: {selectedExpense.paidBy.join(', ')}</Typography>
+						  	{/* <Typography variant="body1">Paid by: {selectedExpense.paidBy.join(', ')}</Typography> */}
+						  	<Typography variant="body1">
+								Paid by: {selectedExpense.paidBy.map(id => getUserNameById(users, id)).join(', ')}
+							</Typography>
 						  	<Typography variant="body1">Date: {selectedExpense.date}</Typography>
 						  	<Box sx={{ marginTop: 2, textAlign: "center" }}>
 								<Button variant="contained" onClick={handleCloseExpenseModal}>Close</Button>
@@ -340,10 +346,13 @@ const Home: React.FC = () => {
 								label="Paid By"
       					      	// onChange={(e) => setPaidBy(e.target.value)}
       					      	onChange={handleAddUserToExpense}
-								renderValue={(selected) => selected.join(', ')}
+								renderValue={(selected) =>
+									selected
+										.map(id => event.users.find(usr => usr.id === id)?.name)
+										.join(', ')}
 							>
       					      {event.users.map((user) => (
-      					        <MenuItem key={user.id} value={user.name}>
+      					        <MenuItem key={user.id} value={user.id}>
       					          {user.name}
       					        </MenuItem>
       					      ))}
