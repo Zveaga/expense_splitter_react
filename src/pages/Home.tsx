@@ -1,8 +1,7 @@
 import React, { use, useEffect, useState } from 'react'
 import { Event, Expense, User, } from '../types/interfaces';
-import { Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
+import { SelectChangeEvent, Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
 import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
-
 // import { user1, user2 } from './Dashboard.tsx'
 // import { expenses } from './Dashboard.tsx';
 
@@ -28,7 +27,7 @@ const expense1: Expense = {
    id: 1,
    description: 'Dinner',
    amount: 50,
-   paidBy: [user1.id],
+   paidBy: [{ userId: user1.id, amount: 50 }],
    participants: [user1, user2],
    date: '2025-01-28',
 };
@@ -37,7 +36,10 @@ const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
    amount: 20,
-   paidBy: [user2.id],
+   paidBy: [
+		{ userId:user2.id, amount: 10 },
+		{ userId:user1.id, amount: 10 },
+	],
    participants: [user1, user2],
    date: '2025-01-27',
 };
@@ -146,7 +148,7 @@ const Home: React.FC = () => {
 		const [description, setDescription] = useState('');
 		const [amount, setAmount] = useState('');
 		const [date, setDate] = useState('');
-		const [paidBy, setPaidBy] = useState<number[]>([]);
+		const [paidBy, setPaidBy] = useState<{ userId: number, amount: number }[]>([]);
 
 		const handleAddExpense = () => {
 			if (!paidBy || !description || !amount || !date) {
@@ -195,9 +197,21 @@ const Home: React.FC = () => {
 			setOpenNewExpenseModal(false);
 		};
 
-		const handleAddUserToExpense = (e) => {
-			setPaidBy(e.target.value);
-		};
+		// const handleAddUserToExpense = (e) => {
+		// 	setPaidBy(e.target.value);
+		// };
+
+		const handleAddUserToExpense = (event: SelectChangeEvent<number[]>) => {
+			const selectedIds = event.target.value as number[];
+		  
+			const updated = selectedIds.map(id => {
+			  	const existing = paidBy.find(usr => usr.userId === id);
+			  	return existing || { userId: id, amount: 0 };
+			});
+		  
+			setPaidBy(updated);
+		  };
+		  
 
 
 
@@ -342,7 +356,7 @@ const Home: React.FC = () => {
       					    <Select
 								labelId="paid-by-label"
 								multiple
-								value={paidBy}
+								value={paidBy.map(usr => usr.userId)}
 								label="Paid By"
       					      	// onChange={(e) => setPaidBy(e.target.value)}
       					      	onChange={handleAddUserToExpense}
@@ -358,6 +372,30 @@ const Home: React.FC = () => {
       					      ))}
       					    </Select>
       					  </FormControl>
+
+						  {/* After selecting users, we show the amount input for each user */}
+
+						  {paidBy.map((payer) => {
+							const user = event.users.find(usr => usr.id === payer.userId);
+							return (
+								<TextField
+									key={payer.userId}
+									label={`Amount paid by ${user?.name}`}
+									type="number"
+									fullWidth
+									margin="dense"
+									value={payer.amount || ''}
+									onChange={(e) => {
+										const updated = paidBy.map(p =>
+										p.userId === payer.userId
+											? { ...p, amount: Number(e.target.value) }
+											: p
+										);
+										setPaidBy(updated);
+									}}
+								/>
+						  	);
+						  })}
 
 
       					  <Button
