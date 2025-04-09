@@ -151,7 +151,7 @@ const Home: React.FC = () => {
 		const [paidBy, setPaidBy] = useState<{ userId: number, amount: number }[]>([]);
 
 		const handleAddExpense = () => {
-			if (!paidBy || !description || !amount || !date) {
+			if (!paidBy || !description || !amount) {
 				return;
 			}
 
@@ -210,7 +210,7 @@ const Home: React.FC = () => {
 			});
 		  
 			setPaidBy(updated);
-		  };
+		};
 		  
 
 
@@ -284,9 +284,9 @@ const Home: React.FC = () => {
 						  	<Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
 						  	{/* <Typography variant="body1">Paid by: {selectedExpense.paidBy.join(', ')}</Typography> */}
 						  	<Typography variant="body1">
-								Paid by: {selectedExpense.paidBy.map(id => getUserNameById(users, id)).join(', ')}
+								Paid by: {selectedExpense.paidBy.map(usr => getUserNameById(users, usr.userId)).join(', ')}
 							</Typography>
-						  	<Typography variant="body1">Date: {selectedExpense.date}</Typography>
+						  	{/* <Typography variant="body1">Date: {selectedExpense.date}</Typography> */}
 						  	<Box sx={{ marginTop: 2, textAlign: "center" }}>
 								<Button variant="contained" onClick={handleCloseExpenseModal}>Close</Button>
 						  	</Box>
@@ -339,7 +339,7 @@ const Home: React.FC = () => {
       					    onChange={(e) => setAmount(e.target.value)}
       					    fullWidth
       					  />
-      					  <TextField
+      					  {/* <TextField
       					    label="Date"
       					    type="date"
       					    value={date}
@@ -348,8 +348,7 @@ const Home: React.FC = () => {
       					      shrink: true,
       					    }}
       					    fullWidth
-      					  />
-
+      					  /> */}
 
       					  <FormControl fullWidth>
       					    <InputLabel id="paid-by-label">Paid By</InputLabel>
@@ -381,7 +380,7 @@ const Home: React.FC = () => {
 								<TextField
 									key={payer.userId}
 									label={`Amount paid by ${user?.name}`}
-									type="number"
+									// type="number"
 									fullWidth
 									margin="dense"
 									value={payer.amount || ''}
@@ -394,7 +393,7 @@ const Home: React.FC = () => {
 										setPaidBy(updated);
 									}}
 								/>
-						  	);
+							);
 						  })}
 
 
