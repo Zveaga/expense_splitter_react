@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useEffect, useState, useMemo } from 'react'
 import { Event, Expense, User, } from '../types/interfaces';
 import { SelectChangeEvent, Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
 import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
@@ -21,13 +21,22 @@ const user2: User = {
 	password: '1',
 };
 
-const users = [user1, user2];
+
+const user3: User = {
+	id: 3,
+	name: 'Rar',
+	userName: 'rrr@example.com',
+	balance: 200,
+	password: '1',
+};
+
+const users = [user1, user2, user3];
 
 const expense1: Expense = {
    id: 1,
    description: 'Dinner',
-   amount: 50,
-   paidBy: [{ userId: user1.id, amount: 50 }],
+   amount: 100,
+   paidBy: [{ userId: user1.id, amount: 100 }],
    participants: [user1, user2],
    date: '2025-01-28',
 };
@@ -35,12 +44,13 @@ const expense1: Expense = {
 const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
-   amount: 20,
+   amount: 100,
    paidBy: [
-		{ userId:user2.id, amount: 10 },
-		{ userId:user1.id, amount: 10 },
+		{ userId: user1.id, amount: 100 },
+		// { userId: user1.id, amount: 10 },
+		// { userId: user1.id, amount: 10 },
 	],
-   participants: [user1, user2],
+   participants: [user1, user2, user3,],
    date: '2025-01-27',
 };
 
@@ -211,9 +221,99 @@ const Home: React.FC = () => {
 		  
 			setPaidBy(updated);
 		};
+		
+
+		type Transaction = {
+			from: number;
+			to: number;
+			amount: number;
+		};
+
+		const getSettlements =  (users: User[], expenses: Expense[]): Transaction[] => {
+			const balances: Record<number, number> = {};
 		  
+			users.forEach(user => {
+			  	balances[user.id] = 0;
+			});
+		  
+			expenses.forEach(exp => {
+				const share = exp.amount / exp.participants.length;
+			
+				exp.participants.forEach(user => {
+					balances[user.id] -= share;
+				});
+			
+				exp.paidBy.forEach(p => {
+					balances[p.userId] += p.amount;
+				});
+			});
+		  
+			const debtors: { userId: number; amount: number }[] = [];
+			const creditors: { userId: number; amount: number }[] = [];
+		  
+			Object.entries(balances).forEach(([userId, amount]) => {
+				if (amount < -0.01) {
+					debtors.push({ userId: Number(userId), amount: -amount });
+				} else if (amount > 0.01) {
+					creditors.push({ userId: Number(userId), amount });
+				}
+			});
+		  
+			const transactions: Transaction[] = [];
+			
+			for (const debtor of debtors) {
+				let toPay = debtor.amount;
+				for (const creditor of creditors) {
+					if (toPay <= 0) break;
+					const payAmount = Math.min(toPay, creditor.amount);
+					if (payAmount > 0) {
+						transactions.push({
+							from: debtor.userId,
+							to: creditor.userId,
+							amount: parseFloat(payAmount.toFixed(2)),
+						});
+						creditor.amount -= payAmount;
+						toPay -= payAmount;
+					}
+				}
+			}
+		  
+			return transactions;
+		}
+		  
+		type Props = {
+			users: User[];
+			expenses: Expense[];
+			theme: any;
+		};
 
-
+		const SettlementDisplay: React.FC<Props> = ({ users, expenses, theme }) => {
+			const transactions = useMemo(() => getSettlements(users, expenses), [users, expenses]);
+				  
+			return (
+				<Box
+					sx={{
+					backgroundColor: theme.palette.background.paper,
+					padding: 2,
+					borderRadius: 2,
+					border: `1px solid ${theme.palette.divider}`,
+					}}
+			  >
+				<Typography variant="h6">Balances:</Typography>
+				<Stack spacing={1} mt={1}>
+					{transactions.length === 0 ? (
+						<Typography variant="body2">All settled up!</Typography>
+					) : (
+						transactions.map((tx, idx) => (
+						<Typography variant="body2" key={idx}>
+							{getUserNameById(users, tx.from)} owes {getUserNameById(users, tx.to)} ${tx.amount.toFixed(2)}
+						</Typography>
+						))
+					)}
+				</Stack>
+			  </Box>
+			);
+		};
 
 		return (
 			<Stack spacing={2}>
@@ -415,6 +515,7 @@ const Home: React.FC = () => {
       			<Divider />
 
 				{/*-------------TRIP SUMMARY-------------*/}
+				
 				<Stack spacing={2} mt={4}>
 					<Typography variant='h5' align='center'>Trip Summary</Typography>
 
@@ -442,7 +543,7 @@ const Home: React.FC = () => {
 					</Box>
 
   					{/*----Individual Totals----*/}
-					<Box
+					{/* <Box
 						sx={{
 						backgroundColor: theme.palette.background.paper,
 						padding: 2,
@@ -455,29 +556,9 @@ const Home: React.FC = () => {
 
 						</Stack>
 
-						{/* <Box display="flex" alignItems="center" gap={5}>
-							<Typography variant="h6">Total Spent:</Typography>
-							<Typography variant="h6"> <strong>10000</strong></Typography>
-						</Box> */}
-					</Box>
+					</Box> */}
   					{/*----Who Owes Whom----*/}
-				
-					  <Box
-						sx={{
-						backgroundColor: theme.palette.background.paper,
-						padding: 2,
-						borderRadius: 2,
-						border: `1px solid ${theme.palette.divider}`,
-						}}
-					>
-						<Typography variant="h7"> Balances:</Typography>
-						<Stack spacing={1} mt={1}>
-							
-						</Stack>
-					</Box>
-				
-				
-				
+					  <SettlementDisplay users={users} expenses={expenses} theme={theme} />
 				</Stack>
 
 			</Stack>
