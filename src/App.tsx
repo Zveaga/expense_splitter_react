@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import theme from './styles/Theme.ts'
 import { ThemeProvider, CssBaseline } from "@mui/material";
 
+
 const App: React.FC = () => {
 	return (
 		<ThemeProvider theme={theme}>
@@ -21,7 +22,6 @@ const App: React.FC = () => {
 				<Routes>
 					<Route path='/' element={<Home />} />
 					<Route path='/dashboard' element={<Dashboard />} />
-					{/* <Route path='/login' element={<LoginModal />} /> */}
 				</Routes>
 			</Router>
 		</ThemeProvider>
