@@ -85,7 +85,8 @@ const sampleEvents: Event[] = [
 ///////////////////////////////////////////////////////////////////////////
 const Home: React.FC = () => {
 	const theme = useTheme();
-	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+	const [selectedEventId, setSelectedEventId] = useState<number>(0);
+
 	const [events, setEvents] = useState<Event[]>(sampleEvents)
 	const [openNewEventModal, setOpenNewEventModal] = useState(false);
 	const [eventName, setEventName] = useState('');
@@ -94,11 +95,15 @@ const Home: React.FC = () => {
 
 	// console.log('Events:\n', events);
 
+	const selectedEvent = useMemo(() => {
+		return events.find(event => event.id === selectedEventId);
+	}, [events, selectedEventId]);
+
 	//------------Event Handlers------------//
-	const handleEventClick = (e: React.MouseEvent, event: Event) => {
+	const handleEventClick = (e: React.MouseEvent, eventId: number) => {
 		// console.log(`Event (${event.description}) clicked!`);
 		e.preventDefault();
-		setSelectedEvent(event);
+		setSelectedEventId(eventId);
 	};
 
 	const handleNewEventClick = () => {
@@ -117,7 +122,7 @@ const Home: React.FC = () => {
 			...selectedEvent,
 			expenses: [...selectedEvent.expenses, newExpense]
 		};
-		setSelectedEvent(updatedEvent);
+		setSelectedEventId(updatedEvent.id);
 		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
 	};
 
@@ -151,7 +156,7 @@ const Home: React.FC = () => {
 		return (
 			<Stack
 				// width={'90%'}
-				onClick={(e: React.MouseEvent) => handleEventClick(e, event)}
+				onClick={(e: React.MouseEvent) => handleEventClick(e, event.id)}
 				direction={'row'}
 				bgcolor={theme.palette.primary.main}
 				paddingX={'0.5em'}
