@@ -37,7 +37,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 			   amount: parseFloat(amount),
 			paidBy: paidBy,
 			   participants: event.users, //!!!
-			   date: date,
+			   date: new Date(),
 		};
 
 		console.log(newExpense);
@@ -320,7 +320,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 							label="Paid By"
 								// onChange={(e) => setPaidBy(e.target.value)}
 								onChange={handleAddUserToExpense}
-							renderValue={(selected) =>
+								renderValue={(selected) =>
 								selected
 									.map(id => event.users.find(usr => usr.id === id)?.name)
 									.join(', ')}
@@ -381,10 +381,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 				<Typography variant='h5' align='center'>Trip Summary</Typography>
 
 				{/*----Total spent----*/}
-				{/* <Paper elevation={2} sx={{ padding: 2 }}>
-					<Typography variant="subtitle1">Total Spent: 1000</Typography>
-					<Typography variant="h6">1000</Typography>
-				</Paper> */}
 				<Box
 					sx={{
 					backgroundColor: theme.palette.background.paper,
@@ -393,8 +389,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 					border: `1px solid ${theme.palette.divider}`,
 					}}
 				>
-					<Typography variant="h7">
-						Total Spent: <strong>10000</strong>
+					<Typography>
+						Total Spent: <strong>{10000}</strong>
 					</Typography>
 
 					{/* <Box display="flex" alignItems="center" gap={5}>
@@ -403,23 +399,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 					</Box> */}
 				</Box>
 
-				  {/*----Individual Totals----*/}
-				{/* <Box
-					sx={{
-					backgroundColor: theme.palette.background.paper,
-					padding: 2,
-					borderRadius: 2,
-					border: `1px solid ${theme.palette.divider}`,
-					}}
-				>
-					<Typography variant="h7"> Individual Totals:</Typography>
-					<Stack spacing={1} mt={1}>
-
-					</Stack>
-
-				</Box> */}
-				  {/*----Who Owes Whom----*/}
-				  <SettlementDisplay users={users} expenses={expenses} theme={theme} />
+				  {/*----Settlements----*/}
+				  <SettlementDisplay users={users} expenses={event.expenses} theme={theme} />
 			</Stack>
 
 		</Stack>

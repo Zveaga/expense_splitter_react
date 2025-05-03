@@ -1,32 +1,26 @@
 import React, { use, useEffect, useState, useMemo } from 'react'
 import { Event, Expense, User, } from '../types/interfaces';
-import { SelectChangeEvent, Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, } from '@mui/material';
+import { SelectChangeEvent, Paper, Modal, Container, Box, Stack, InputBase, Divider, Typography, useTheme, TextField, FormControl, Select, Button, InputLabel, MenuItem, Chip } from '@mui/material';
 import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
 import EventDetails from '../components/EventDetails.tsx';
+import { createUserFromName } from '../utils/userUtils.ts';
+
+// import 
 
 const user1: User = {
 	id: 1,
 	name: 'Alice',
-	userName: 'alice@example.com',
-	balance: 50,
-	password: '1',
 };
 
 const user2: User = {
 	id: 2,
 	name: 'Bob',
-	userName: 'bob@example.com',
-	balance: -30,
-	password: '1',
 };
 
 
 const user3: User = {
 	id: 3,
 	name: 'Rar',
-	userName: 'rrr@example.com',
-	balance: 200,
-	password: '1',
 };
 
 const users = [user1, user2, user3];
@@ -34,26 +28,26 @@ const users = [user1, user2, user3];
 const expense1: Expense = {
    id: 1,
    description: 'Dinner',
-   amount: 100,
-   paidBy: [{ userId: user1.id, amount: 100 }],
-   participants: [user1, user2],
-   date: '2025-01-28',
+   amount: 1000,
+   paidBy: [{ userId: user1.id, amount: 1000 }],
+   participants: [ user1, user2, ],
+   date: new Date(),
 };
 
 const expense2: Expense = {
    id: 2,
    description: 'Uber ride',
-   amount: 100,
+   amount: 1000,
    paidBy: [
-		{ userId: user1.id, amount: 100 },
-		// { userId: user1.id, amount: 10 },
+		{ userId: user1.id, amount: 1000 },
+		// { userId: user2.id, amount: 10 },
 		// { userId: user1.id, amount: 10 },
 	],
-   participants: [user1, user2, user3,],
-   date: '2025-01-27',
+   participants: [ user1, user2 ],
+   date: new Date(),
 };
 
-export const expenses = [expense1, expense2,];
+export const expenses = [expense1, expense2, ];
 
 const sampleEvents: Event[] = [
 	{
@@ -61,7 +55,7 @@ const sampleEvents: Event[] = [
 		description: 'ski trip',
 		expenses: expenses,
 		users: [user1, user2],
-		date: '21-01-2024',
+		date: new Date(),
 
 	},
 	{
@@ -69,15 +63,14 @@ const sampleEvents: Event[] = [
 		description: 'greece',
 		expenses: [],
 		users: [user1, user2],
-		date: '21-01-2024',
-
+		date: new Date(),
 	},
 	{
 		id: 3,
 		description: 'patagonia',
 		expenses: [],
 		users: [user1, user2],
-		date: '21-01-2024',
+		date: new Date(),
 	},
 ];
 
@@ -90,7 +83,8 @@ const Home: React.FC = () => {
 	const [events, setEvents] = useState<Event[]>(sampleEvents)
 	const [openNewEventModal, setOpenNewEventModal] = useState(false);
 	const [eventName, setEventName] = useState('');
-	const [participants, setParticipants] = useState([]);
+	const [participants, setParticipants] = useState<User[]>([]);
+	const [participantInput, setParticipantInput] = useState<string>('');
 	const [date, setDate] = useState('');
 
 	// console.log('Events:\n', events);
@@ -111,6 +105,8 @@ const Home: React.FC = () => {
 	};
 
 	const handleCloseNewEventModal = () => {
+		setEventName('');
+		setParticipants([]);
 		setOpenNewEventModal(false);
 	};
 
@@ -137,20 +133,18 @@ const Home: React.FC = () => {
 			description: eventName,
 			expenses: [],
 			users: participants,
-			date: date,
+			date: new Date(),
 		};
 		setEvents(prevEvents => [...prevEvents, newEvent]);
 	};
 
 
-	const handleAddUserToEvent = (e) => {
-		setParticipants(e.target.value);
-	};
-	
-	//------------UI child components of Home ------------//
-	
+	const handleAddUserToEvent = (name: string) => {
+		const newUser = createUserFromName(name);
+		setParticipants(prevState => [...prevState, newUser]) 
 
-	
+	}
+	//------------UI child components of Home ------------//
 	
 	const EventLine: React.FC<{event: Event}> = ({event})  => {
 		return (
@@ -222,7 +216,7 @@ const Home: React.FC = () => {
 					  	  New Event
 					  	</Button>
 					</Box>
-
+					{/*-------------NewEventModal-------------*/}
 					<Modal
 						open={openNewEventModal}
 						onClose={handleCloseNewEventModal}
@@ -246,7 +240,7 @@ const Home: React.FC = () => {
 								onChange={(e) => setEventName(e.target.value)}
 								fullWidth
 							/>
-							<TextField
+							{/* <TextField
 								label="Date"
 								type="date"
 								value={date}
@@ -255,24 +249,31 @@ const Home: React.FC = () => {
 								shrink: true,
 								}}
 								fullWidth
-							/>
+							/> */}
 							<FormControl fullWidth>
-								<InputLabel id="participants-label">Participants</InputLabel>
-								<Select
-									labelId="participants-label"
-									multiple
-									value={participants}
-									label="Paid By"
-									// onChange={(e) => setPaidBy(e.target.value)}
-									onChange={handleAddUserToEvent}
-									renderValue={(selected) => selected.join(', ')}
-								>
-								{users.map((user) => (
-									<MenuItem key={user.id} value={user.name}>
-									{user.name}
-									</MenuItem>
+							<TextField
+								label="Participants"
+								placeholder="Type a name and press Enter"
+								value={participantInput}
+								onChange={(e) => setParticipantInput(e.target.value)}
+								onKeyDown={(e) => {
+								if (e.key === 'Enter' && participantInput.trim()) {
+									handleAddUserToEvent(participantInput.trim());
+									setParticipantInput('');
+									e.preventDefault();
+								}
+								}}
+							/>
+							<div>
+								{participants.map((participant, index) => (
+								<Chip
+									key={index}
+									label={participant.name}
+									// onDelete={() => handleRemoveParticipant(participant)}
+									style={{ margin: '4px' }}
+								/>
 								))}
-								</Select>
+							</div>
 							</FormControl>
 							<Button
 									onClick={handleAddEvent}
@@ -305,7 +306,7 @@ const Home: React.FC = () => {
           		}}
         		>
 					{selectedEvent ? (
-						<EventDetails event={selectedEvent} onAddExpense={handleAddExpense} expenses={expenses} users={users} />
+						<EventDetails event={selectedEvent} onAddExpense={handleAddExpense} expenses={selectedEvent.expenses} users={selectedEvent.users} />
 					) : (
 						<Typography variant="h6" align="center">
               				Please select an event.

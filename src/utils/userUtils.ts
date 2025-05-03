@@ -9,3 +9,12 @@ export const getIdByUserName = (users: User[], name: string) : number => {
 	const user = users.find((user) => user.name === name);
 	return user ? user.id : -1;
 };
+
+export const createUserFromName = (name: string): User => {
+	const id = Date.now();
+	
+	return {
+		id,
+		name,
+	};
+};
