@@ -14,7 +14,7 @@ export interface Expense {
 	amount: number; 								// Total amount of the expense
 	paidBy: { userId: number, amount: number }[];	// Who paid the expense
 	participants: User[];							// The users involved in the expense
-	date: Date;									// The date when the expense was made
+	date: Date;										// The date when the expense was made
 }
 
 export interface Transaction {

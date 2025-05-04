@@ -3,16 +3,18 @@ import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Modal, Select,
 import { useTheme } from '@mui/material/styles';
 import { User, Expense, Event } from '../types/interfaces';
 import { getUserNameById } from '../utils/userUtils.ts';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface EventDetailsProps {
 	event: Event;
 	onAddExpense: (expense: Expense) => void;
 	onDeleteEvent: (eventId: number) => void;
-	expenses: Expense[];
+	setSelectedEvent: React.Dispatch<React.SetStateAction<Event | null>>;
+	setEvents: React.Dispatch<React.SetStateAction<Event[]>>;
 	users: User[];
 }
 
-const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDeleteEvent, expenses, users}) => {
+const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDeleteEvent, setSelectedEvent, users}) => {
 	const theme = useTheme();
 	const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 	const [openNewExpenseModal, setOpenNewExpenseModal] = useState(false);
@@ -80,8 +82,19 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 		setPaidBy(updated);
 	};
 
+	const handleDeleteExpense = (expenseId: number) => {
+		if (!event) return;
+		const updatedExpenses = event.expenses.filter(expense => expense.id !== expenseId);
+		setSelectedEvent({ ...event, expenses: updatedExpenses});
+		// setSelectedEvent((prevState) => {
+		// 	if (!prevState) return null;
+		// 	return {
+		// 		...prevState,
+		// 		expenses: updatedExpenses,
+		// 	};
+		// });
+	};
 
-	
 	type Transaction = {
 		from: number;
 		to: number;
@@ -186,6 +199,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 						onClick={() => handleExpenseClick(expense)}
 						padding={1}
 						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'center',
 							border: '1px solid #ccc',
 							borderRadius: '4px',
 							backgroundColor: theme.palette.background.paper,
@@ -198,12 +214,22 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 							},
 						}}
 					>
-						<Typography variant="subtitle1" align='center'>
+						<Typography variant="subtitle1" align='center' sx={{ flexGrow: 1, textAlign: 'center' }}>
 							{expense.description.charAt(0).toUpperCase() + expense.description.slice(1)}
 						</Typography>
 						{/* <Typography variant="caption">
 							Paid by: {expense.paidBy} on {expense.date}
 						</Typography> */}
+						<Button
+							type="button"
+							onClick={(e) => {
+								e.stopPropagation();
+								handleDeleteExpense(expense.id);
+							}}
+							sx={{ minWidth: 'auto', padding: 1 }}
+						>
+							<DeleteIcon />
+						</Button>
 					</Box>
 				))
 			) : (
@@ -385,8 +411,16 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 			<Divider />
 			<Button
 				onClick={() => onDeleteEvent(event.id)}
-				// variant="contained"
-				color="error"
+
+				variant="contained"
+				color="primary"
+				sx={{
+					color: '#fc4c4c', // Text color
+					// fontSize: '16px', // Font size
+					// fontWeight: 'bold', // Font weight
+					textTransform: 'uppercase', // Transform text to uppercase
+					// fontFamily: 'Arial, sans-serif', // Font family
+				}}
 				// style={{ marginTop: '19.5em' }}
 			>
 				Delete Event

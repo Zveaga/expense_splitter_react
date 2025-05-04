@@ -76,9 +76,10 @@ const sampleEvents: Event[] = [
 ///////////////////////////////////////////////////////////////////////////
 const Home: React.FC = () => {
 	const theme = useTheme();
-	const [selectedEventId, setSelectedEventId] = useState<number>(0);
+	// const [selectedEventId, setSelectedEventId] = useState<number>(0);
 
-	const [events, setEvents] = useState<Event[]>(sampleEvents)
+	const [events, setEvents] = useState<Event[]>(sampleEvents);
+	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [openNewEventModal, setOpenNewEventModal] = useState(false);
 	const [eventName, setEventName] = useState('');
 	const [participants, setParticipants] = useState<User[]>([]);
@@ -87,15 +88,15 @@ const Home: React.FC = () => {
 
 	// console.log('Events:\n', events);
 
-	const selectedEvent = useMemo(() => {
-		return events.find(event => event.id === selectedEventId);
-	}, [events, selectedEventId]);
+	// const selectedEvent = useMemo(() => {
+	// 	return events.find(event => event.id === selectedEventId);
+	// }, [events, selectedEventId]);
 
 	//------------Event Handlers------------//
-	const handleEventClick = (e: React.MouseEvent, eventId: number) => {
+	const handleEventClick = (e: React.MouseEvent, event: Event) => {
 		// console.log(`Event (${event.description}) clicked!`);
 		e.preventDefault();
-		setSelectedEventId(eventId);
+		setSelectedEvent(event);
 	};
 
 	const handleNewEventClick = () => {
@@ -116,7 +117,7 @@ const Home: React.FC = () => {
 			...selectedEvent,
 			expenses: [...selectedEvent.expenses, newExpense]
 		};
-		setSelectedEventId(updatedEvent.id);
+		setSelectedEvent(updatedEvent);
 		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
 	};
 
@@ -140,6 +141,11 @@ const Home: React.FC = () => {
 		setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
 	};
 
+	// const handleDeleteExpense = (expenseId: number, eventId: number) => {
+	// 	const event = events.find(event => event.id === eventId);
+	// 	if (!event) return;
+	// };
+
 	const handleAddUserToEvent = (name: string) => {
 		const newUser = createUserFromName(name);
 		setParticipants(prevState => [...prevState, newUser]) 
@@ -151,7 +157,7 @@ const Home: React.FC = () => {
 		return (
 			<Stack
 				// width={'90%'}
-				onClick={(e: React.MouseEvent) => handleEventClick(e, event.id)}
+				onClick={(e: React.MouseEvent) => handleEventClick(e, event)}
 				direction={'row'}
 				bgcolor={theme.palette.primary.main}
 				paddingX={'0.5em'}
@@ -172,7 +178,6 @@ const Home: React.FC = () => {
 				<Typography>
 				{ event.description.charAt(0).toUpperCase() + event.description.slice(1) }
 				</Typography>
-
 			</Stack>
 		);
 	};
@@ -307,7 +312,14 @@ const Home: React.FC = () => {
           		}}
         		>
 					{selectedEvent ? (
-						<EventDetails event={selectedEvent} onAddExpense={handleAddExpense} onDeleteEvent={handleDeleteEvent} expenses={selectedEvent.expenses} users={selectedEvent.users} />
+						<EventDetails
+							event={selectedEvent}
+							setEvents={setEvents}
+							onAddExpense={handleAddExpense}
+							onDeleteEvent={handleDeleteEvent}
+							setSelectedEvent={setSelectedEvent}
+							users={selectedEvent.users}
+						/>
 					) : (
 						<Typography variant="h6" align="center">
               				Please select an event.
