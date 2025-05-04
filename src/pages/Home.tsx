@@ -136,6 +136,9 @@ const Home: React.FC = () => {
 		setEvents(prevEvents => [...prevEvents, newEvent]);
 	};
 
+	const handleDeleteEvent = (eventId: number) => {
+		setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
+	};
 
 	const handleAddUserToEvent = (name: string) => {
 		const newUser = createUserFromName(name);
@@ -304,7 +307,7 @@ const Home: React.FC = () => {
           		}}
         		>
 					{selectedEvent ? (
-						<EventDetails event={selectedEvent} onAddExpense={handleAddExpense} expenses={selectedEvent.expenses} users={selectedEvent.users} />
+						<EventDetails event={selectedEvent} onAddExpense={handleAddExpense} onDeleteEvent={handleDeleteEvent} expenses={selectedEvent.expenses} users={selectedEvent.users} />
 					) : (
 						<Typography variant="h6" align="center">
               				Please select an event.

@@ -7,11 +7,12 @@ import { getUserNameById } from '../utils/userUtils.ts';
 interface EventDetailsProps {
 	event: Event;
 	onAddExpense: (expense: Expense) => void;
+	onDeleteEvent: (eventId: number) => void;
 	expenses: Expense[];
 	users: User[];
 }
 
-const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expenses, users}) => {
+const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDeleteEvent, expenses, users}) => {
 	const theme = useTheme();
 	const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 	const [openNewExpenseModal, setOpenNewExpenseModal] = useState(false);
@@ -79,9 +80,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 		setPaidBy(updated);
 	};
 
-	const handleDeleteEvent = () => {
 
-	};
 	
 	type Transaction = {
 		from: number;
@@ -385,7 +384,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 			</Stack>
 			<Divider />
 			<Button
-				onClick={handleDeleteEvent}
+				onClick={() => onDeleteEvent(event.id)}
 				// variant="contained"
 				color="error"
 				// style={{ marginTop: '19.5em' }}
