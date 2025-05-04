@@ -34,7 +34,7 @@ const Navigation: React.FC = () => {
 			  </Button>
 			</Box>
 
-			<Box sx={{ marginLeft: 'auto' }}>
+			{/* <Box sx={{ marginLeft: 'auto' }}>
 				<Button
 					onClick={() => setLoginModalOpen(true)}
 					sx={{
@@ -44,7 +44,7 @@ const Navigation: React.FC = () => {
 				>
 					Login
 				</Button>
-			</Box>
+			</Box> */}
 
 		  </Toolbar>
 		</AppBar>

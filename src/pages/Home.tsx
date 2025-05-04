@@ -5,8 +5,6 @@ import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
 import EventDetails from '../components/EventDetails.tsx';
 import { createUserFromName } from '../utils/userUtils.ts';
 
-// import 
-
 const user1: User = {
 	id: 1,
 	name: 'Alice',
@@ -177,7 +175,7 @@ const Home: React.FC = () => {
 	};
 
 	return (
-		<Container maxWidth={false} sx={{padding: theme.spacing(3) }}>
+		<Container sx={{ padding: theme.spacing(3) }}>
 			<Stack direction={'row'} spacing={1}>
 				{/*---Left column (event list)---*/}
 				<Box

@@ -68,22 +68,21 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 		setOpenNewExpenseModal(false);
 	};
 
-	// const handleAddUserToExpense = (e) => {
-	// 	setPaidBy(e.target.value);
-	// };
-
 	const handleAddUserToExpense = (event: SelectChangeEvent<number[]>) => {
 		const selectedIds = event.target.value as number[];
 	  
 		const updated = selectedIds.map(id => {
-			  const existing = paidBy.find(usr => usr.userId === id);
-			  return existing || { userId: id, amount: 0 };
+			const existing = paidBy.find(usr => usr.userId === id);
+			return existing || { userId: id, amount: 0 };
 		});
 	  
 		setPaidBy(updated);
 	};
-	
 
+	const handleDeleteEvent = () => {
+
+	};
+	
 	type Transaction = {
 		from: number;
 		to: number;
@@ -93,20 +92,12 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 	const getSettlements =  (users: User[], expenses: Expense[]): Transaction[] => {
 		const balances: Record<number, number> = {};
 	  
-		users.forEach(user => {
-			  balances[user.id] = 0;
-		});
+		users.forEach(user => balances[user.id] = 0);
 	  
 		expenses.forEach(exp => {
 			const share = exp.amount / exp.participants.length;
-		
-			exp.participants.forEach(user => {
-				balances[user.id] -= share;
-			});
-		
-			exp.paidBy.forEach(p => {
-				balances[p.userId] += p.amount;
-			});
+			exp.participants.forEach(user => balances[user.id] -= share);
+			exp.paidBy.forEach(p => balances[p.userId] += p.amount);
 		});
 	  
 		const debtors: { userId: number; amount: number }[] = [];
@@ -300,16 +291,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 						  onChange={(e) => setAmount(e.target.value)}
 						  fullWidth
 						/>
-						{/* <TextField
-						  label="Date"
-						  type="date"
-						  value={date}
-						  onChange={(e) => setDate(e.target.value)}
-						  InputLabelProps={{
-							shrink: true,
-						  }}
-						  fullWidth
-						/> */}
 
 						<FormControl fullWidth>
 						  <InputLabel id="paid-by-label">Paid By</InputLabel>
@@ -377,7 +358,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 
 			{/*-------------TRIP SUMMARY-------------*/}
 			
-			<Stack spacing={2} mt={4}>
+			<Stack spacing={2} mt={4} display={'flex'}>
 				<Typography variant='h5' align='center'>Trip Summary</Typography>
 
 				{/*----Total spent----*/}
@@ -402,6 +383,15 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, expens
 				  {/*----Settlements----*/}
 				  <SettlementDisplay users={users} expenses={event.expenses} theme={theme} />
 			</Stack>
+			<Divider />
+			<Button
+				onClick={handleDeleteEvent}
+				// variant="contained"
+				color="error"
+				// style={{ marginTop: '19.5em' }}
+			>
+				Delete Event
+			</Button>
 
 		</Stack>
 	);
