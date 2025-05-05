@@ -1,5 +1,5 @@
 # 💸 Expense Splitter
-The goal is to build a web app for splitting group expenses — perfect for trips, dinners, roommates, and more.
+The goal is to build a web app for splitting group expenses.
 
 ## 🚀 Planned Features
 ➕ Add and manage expenses <br>
