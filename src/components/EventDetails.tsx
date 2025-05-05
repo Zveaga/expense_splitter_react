@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { User, Expense, Event } from '../types/interfaces';
 import { getUserNameById } from '../utils/userUtils.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getTotalSpent }from '../utils/eventUtils.ts';
 
 interface EventDetailsProps {
 	event: Event;
@@ -145,13 +146,13 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 		return transactions;
 	}
 	  
-	type Props = {
+	type SettlementDisplayProps = {
 		users: User[];
 		expenses: Expense[];
 		theme: any;
 	};
 
-	const SettlementDisplay: React.FC<Props> = ({ users, expenses, theme }) => {
+	const SettlementDisplay: React.FC<SettlementDisplayProps> = ({ users, expenses, theme }) => {
 		const transactions = useMemo(() => getSettlements(users, expenses), [users, expenses]);
 			  
 		return (
@@ -170,7 +171,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 				) : (
 					transactions.map((tx, idx) => (
 					<Typography variant="body2" key={idx}>
-						{getUserNameById(users, tx.from)} owes {getUserNameById(users, tx.to)} ${tx.amount.toFixed(2)}
+						{getUserNameById(users, tx.from)} owes {getUserNameById(users, tx.to)} €{tx.amount.toFixed(2)}
 					</Typography>
 					))
 				)}
@@ -258,7 +259,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 						  <Typography variant="h5" gutterBottom>
 							Expense Details
 						  </Typography>
-						  <Typography variant="body1">Amount: ${selectedExpense.amount}</Typography>
+						  <Typography variant="body1">Amount: €{selectedExpense.amount}</Typography>
 						  {/* <Typography variant="body1">Paid by: {selectedExpense.paidBy.join(', ')}</Typography> */}
 						  <Typography variant="body1">
 							Paid by: {selectedExpense.paidBy.map(usr => getUserNameById(users, usr.userId)).join(', ')}
@@ -396,7 +397,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 					}}
 				>
 					<Typography>
-						Total Spent: <strong>{10000}</strong>
+						Total Spent: <strong>{getTotalSpent(event.expenses)}</strong>
 					</Typography>
 
 					{/* <Box display="flex" alignItems="center" gap={5}>
