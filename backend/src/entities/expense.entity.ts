@@ -14,11 +14,11 @@ export default class Expense {
 
 	@ManyToMany(() => User)
 	@JoinTable()
-	paidBy: { userId: number, amount: number }[] = [];
+	paidBy!: { userId: number, amount: number }[];
 
 	@ManyToMany(() => User)
 	@JoinTable()
-	participants: User[] = [];
+	participants!: User[];
 
 	@Column()
 	date: Date = new Date();

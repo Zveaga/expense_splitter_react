@@ -5,6 +5,33 @@ import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
 import EventDetails from '../components/EventDetails.tsx';
 import { createUserFromName } from '../utils/userUtils.ts';
 
+/*import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Expense } from "../types/interfaces";
+
+const Dashboard: React.FC = () => {
+    const [expenses, setExpenses] = useState<Expense[]>([]);
+
+    useEffect(() => {
+        axios.get("http://localhost:5000/api/expenses")
+            .then((response) => setExpenses(response.data))
+            .catch((error) => console.error(error));
+    }, []);
+
+    return (
+        <div>
+            {expenses.map((expense) => (
+                <div key={expense.id}>
+                    <p>{expense.description}: ${expense.amount}</p>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default Dashboard;
+*/
+
 const user1: User = {
 	id: 1,
 	name: 'Alice',
