@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AppDataSource } from "../data-source";
-import User from '../entities/expense.entity'
+import User from '../entities/user.entity'
 
 const router = Router();
 

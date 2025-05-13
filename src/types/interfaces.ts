@@ -7,11 +7,17 @@ export interface User {
 	// password: string;
 }
 
+export interface PaidBy {
+	userId: number;
+	amount: number;
+}
+
 export interface Expense {
 	id: number;
 	description: string;
 	amount: number;
-	paidBy: { userId: number, amount: number }[];
+	// paidBy: { userId: number, amount: number }[];
+	paidBy: PaidBy[];
 	participants: User[];
 	date: Date;
 }

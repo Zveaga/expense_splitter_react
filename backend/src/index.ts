@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import express from "express";
 import { AppDataSource } from "./data-source";
-import expenseRoutes from "./routes/expenseRoutes";
 import userRoutes from "./routes/userRoutes";
+import eventRoutes from './routes/eventRoutes'
+import expenseRoutes from "./routes/expenseRoutes";
 
 const app = express();
 app.use(express.json());
@@ -17,4 +18,5 @@ AppDataSource.initialize()
 	.catch((error) => console.log(error));
 
 app.use('/api/users', userRoutes);
+app.use('/api/events', eventRoutes);
 app.use('/api/expenses', expenseRoutes);

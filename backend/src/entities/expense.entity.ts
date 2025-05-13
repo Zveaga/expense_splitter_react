@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable } from "typeorm";
 import User from "./user.entity";
+import Event from './event.entity'
 
 @Entity()
 export default class Expense {
@@ -22,4 +23,7 @@ export default class Expense {
 
 	@Column()
 	date: Date = new Date();
+
+	@ManyToOne(() => Event, (event: Event) => event.expenses)
+    event!: Event;
 }
