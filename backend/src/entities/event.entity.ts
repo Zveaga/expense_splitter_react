@@ -18,7 +18,7 @@ export default class Event {
 	@JoinTable()
 	users!: User[];
 
-	@Column()
-	date: Date = new Date();
+	// @Column()
+	// date: Date = new Date();
 }
 

@@ -16,10 +16,11 @@ export interface Expense {
 	id: number;
 	description: string;
 	amount: number;
-	// paidBy: { userId: number, amount: number }[];
-	paidBy: PaidBy[];
+	paidBy: { userId: number, amount: number }[];
+	// paidBy: PaidBy[];
 	participants: User[];
-	date: Date;
+	// date: Date;
+	eventId: number;
 }
 
 export interface Transaction {
@@ -29,7 +30,7 @@ export interface Transaction {
 	toUser: User;
 	amount: number;
 	status: 'pending' | 'completed';
-	date: string;
+	// date: string;
 }
 
 
@@ -45,5 +46,5 @@ export interface Event {
 	description: string;
 	expenses: Expense[],
 	users: User[];
-	date: Date;
+	// date: Date;
 }
