@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
 	const expenseRepository = AppDataSource.getRepository(Expense);
-	const expenses = await expenseRepository.find({ relations: ['participants', 'paidBy'] });
+	const expenses = await expenseRepository.find({ relations: ['participants',] });
 	res.json(expenses);
 });
 

@@ -50,53 +50,49 @@ const user3: User = {
 
 const users = [user1, user2, user3];
 
-const expense1: Expense = {
-   id: 1,
-   description: 'Dinner',
-   amount: 1000,
-   paidBy: [{ userId: user1.id, amount: 1000 }],
-   participants: [ user1, user2, ],
-   date: new Date(),
-};
+// const expense1: Expense = {
+//    id: 1,
+//    description: 'Dinner',
+//    amount: 1000,
+//    paidBy: [{ userId: user1.id, amount: 1000 }],
+//    participants: [ user1, user2, ],
+// //    date: new Date(),
+// };
 
-const expense2: Expense = {
-   id: 2,
-   description: 'Uber ride',
-   amount: 1000,
-   paidBy: [
-		{ userId: user1.id, amount: 1000 },
-		// { userId: user2.id, amount: 10 },
-		// { userId: user1.id, amount: 10 },
-	],
-   participants: [ user1, user2 ],
-   date: new Date(),
-};
+// const expense2: Expense = {
+//    id: 2,
+//    description: 'Uber ride',
+//    amount: 1000,
+//    paidBy: [
+// 		{ userId: user1.id, amount: 1000 },
+// 		// { userId: user2.id, amount: 10 },
+// 		// { userId: user1.id, amount: 10 },
+// 	],
+//    participants: [ user1, user2 ],
+// //    date: new Date(),
+// };
 
-export const expenses = [expense1, expense2, ];
+// export const expenses = [expense1, expense2, ];
 
 const sampleEvents: Event[] = [
 	{
 		id: 1,
 		description: 'ski trip',
-		expenses: expenses,
+		expenses: [],
 		users: [user1, user2],
-		date: new Date(),
-
 	},
 	{
 		id: 2,
 		description: 'greece',
 		expenses: [],
 		users: [user1, user2],
-		date: new Date(),
-	},
+		},
 	{
 		id: 3,
 		description: 'patagonia',
 		expenses: [],
 		users: [user1, user2],
-		date: new Date(),
-	},
+		},
 ];
 
 

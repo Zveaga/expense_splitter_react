@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:5000/api/expenses';
 
 export const getExpenses = async () => {
 	const response = await axios.get(API_URL);
-	console.log('response from backend (expenses): ', response);
+	console.log('response backend (expenses): ', response);
 	return response.data;
 }
 

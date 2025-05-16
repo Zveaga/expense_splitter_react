@@ -4,9 +4,13 @@ import { AppDataSource } from "./data-source";
 import userRoutes from "./routes/userRoutes";
 import eventRoutes from './routes/eventRoutes'
 import expenseRoutes from "./routes/expenseRoutes";
+import cors from 'cors'
 
 const app = express();
 app.use(express.json());
+
+// app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors());
 
 AppDataSource.initialize()
 	.then(() => {
