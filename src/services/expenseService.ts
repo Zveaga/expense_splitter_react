@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { User } from '../types/interfaces';
 
 const API_URL = 'http://localhost:5000/api/expenses';
 
@@ -11,12 +12,13 @@ export const getExpenses = async () => {
 export const createExpense = async (expenseData: {
 	description: string;
     amount: number;
-    participants: number[];
+    participants: User[];
     paidBy: { userId: number; amount: number }[];
     eventId: number;
 }) => {
+	console.log('expenseData:', expenseData);
 	const response = await axios.post(API_URL, expenseData);
-	console.log('expenseData sent to backend: ', response);
+	console.log('response from backend: ', response);
 
 	return response.data;
 }

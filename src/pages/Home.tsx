@@ -4,6 +4,7 @@ import { SelectChangeEvent, Paper, Modal, Container, Box, Stack, InputBase, Divi
 import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
 import EventDetails from '../components/EventDetails.tsx';
 import { createUserFromName } from '../utils/userUtils.ts';
+import { getExpenses, createExpense } from '../services/expenseService.ts';
 
 /*import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -115,6 +116,27 @@ const Home: React.FC = () => {
 	// 	return events.find(event => event.id === selectedEventId);
 	// }, [events, selectedEventId]);
 
+
+	useEffect(() => {
+		const fetchExpenses = async () => {
+			try {
+				const data = await getExpenses();
+				console.log(data);
+				setSelectedEvent((prevEvent) => {
+					if (!prevEvent) return null;
+					return {
+						...prevEvent,
+						expenses: [...prevEvent.expenses, ...data], }
+					});
+				} catch (error) {
+					console.log('Error fetching expenses:', error);
+				}
+
+		}
+		fetchExpenses();
+	}, []);
+
+
 	//------------Event Handlers------------//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
 		// console.log(`Event (${event.description}) clicked!`);
@@ -132,17 +154,23 @@ const Home: React.FC = () => {
 		setOpenNewEventModal(false);
 	};
 
-	const handleAddExpense = (newExpense: Expense) => {
-		if (!selectedEvent) {
-			return;
-		}
-		const updatedEvent = {
-			...selectedEvent,
-			expenses: [...selectedEvent.expenses, newExpense]
-		};
-		setSelectedEvent(updatedEvent);
-		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+	const handleAddExpenseToEvent = async (newExpense: Expense) => {
+		if (!selectedEvent) return;
+
+		// try {
+		// 	const createdExpense = await createExpense(newExpense);
+			const updatedEvent = {
+				...selectedEvent,
+				expenses: [...selectedEvent.expenses, newExpense]
+			};
+			setSelectedEvent(updatedEvent);
+			setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+			
+		// } catch(error) {
+		// 	console.error('Error creating expense:', error);
+		// }
 	};
+
 
 	const handleAddEvent = () => {
 		const tempId =
@@ -338,7 +366,7 @@ const Home: React.FC = () => {
 						<EventDetails
 							event={selectedEvent}
 							setEvents={setEvents}
-							onAddExpense={handleAddExpense}
+							onAddExpense={handleAddExpenseToEvent}
 							onDeleteEvent={handleDeleteEvent}
 							setSelectedEvent={setSelectedEvent}
 							users={selectedEvent.users}

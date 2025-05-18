@@ -27,6 +27,6 @@ export default class Expense {
 	// @Column()
 	// date: Date = new Date();
 
-	@ManyToOne(() => Event, (event: Event) => event.expenses)
-    event!: Event;
+	// @ManyToOne(() => Event, (event: Event) => event.expenses)
+    // event!: Event;
 }

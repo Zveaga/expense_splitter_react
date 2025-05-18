@@ -5,7 +5,7 @@ import { User, Expense, Event } from '../types/interfaces';
 import { getUserNameById } from '../utils/userUtils.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getTotalSpent } from '../utils/eventUtils.ts';
-import { getExpenses } from '../services/expenseService.ts';
+import { createExpense, getExpenses } from '../services/expenseService.ts';
 
 interface EventDetailsProps {
 	event: Event;
@@ -27,27 +27,27 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 	const [paidBy, setPaidBy] = useState<{ userId: number, amount: number }[]>([]);
 
 
-	useEffect(() => {
-		const fetchExpenses = async () => {
-			try {
-				const data = await getExpenses();
-				console.log(data);
-				setSelectedEvent((prevEvent) => {
-					if (!prevEvent) return null;
-					return {
-						...prevEvent,
-						expenses: [...prevEvent.expenses, ...data],}
-				  });
-				} catch (error) {
-				console.log('Error fetching expenses:', error);
-			}
+	// useEffect(() => {
+	// 	const fetchExpenses = async () => {
+	// 		try {
+	// 			const data = await getExpenses();
+	// 			console.log(data);
+	// 			setSelectedEvent((prevEvent) => {
+	// 				if (!prevEvent) return null;
+	// 				return {
+	// 					...prevEvent,
+	// 					expenses: [...prevEvent.expenses, ...data],}
+	// 			  });
+	// 			} catch (error) {
+	// 			console.log('Error fetching expenses:', error);
+	// 		}
 
-		}
+	// 	}
 
-		fetchExpenses();
-	}, []);
+	// 	fetchExpenses();
+	// }, []);
 
-	const handleAddExpense = () => {
+	const handleAddExpense = async () => {
 		if (!paidBy || !description || !amount) {
 			return;
 		}
@@ -58,7 +58,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 				: 1;
 
 		const newExpense = {
-			id: tempId,
+			// id: tempId,
 			description: description,
 			amount: parseFloat(amount),
 			paidBy: paidBy,
@@ -67,13 +67,22 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 			eventId: event.id,
 		};
 
-		console.log(newExpense);
 
-		onAddExpense(newExpense);
-		setDescription('');
-		setAmount('');
-		setDate('');
-		setPaidBy([]);
+		try {
+			const createdExpense = await createExpense(newExpense);
+			console.log('createdExpense:', createdExpense);
+	
+			onAddExpense(createdExpense);
+			setDescription('');
+			setAmount('');
+			setDate('');
+			setPaidBy([]);
+		} catch (error) {
+			console.error('Error creating expense:', error);
+		}
+
+
+
 
 	};
 

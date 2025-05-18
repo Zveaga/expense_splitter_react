@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { ManyToMany, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import Event from "./event.entity";
+import Expense from "./expense.entity";
 
 @Entity()
 export default class User {
@@ -7,4 +9,8 @@ export default class User {
 
 	@Column()
 	name: string = '';
+
+	@ManyToMany(() => Event, (event) => event.users)
+    events!: Event[];
+
 }
