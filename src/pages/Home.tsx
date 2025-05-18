@@ -5,6 +5,7 @@ import { getUserNameById, getIdByUserName } from '../utils/userUtils.ts';
 import EventDetails from '../components/EventDetails.tsx';
 import { createUserFromName } from '../utils/userUtils.ts';
 import { getExpenses, createExpense } from '../services/expenseService.ts';
+import { getEvents, createEvent } from '../services/eventService.ts';
 
 /*import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -102,13 +103,13 @@ const Home: React.FC = () => {
 	const theme = useTheme();
 	// const [selectedEventId, setSelectedEventId] = useState<number>(0);
 
-	const [events, setEvents] = useState<Event[]>(sampleEvents);
+	const [events, setEvents] = useState<Event[]>([]);
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [openNewEventModal, setOpenNewEventModal] = useState(false);
 	const [eventName, setEventName] = useState('');
 	const [participants, setParticipants] = useState<User[]>([]);
 	const [participantInput, setParticipantInput] = useState<string>('');
-	const [date, setDate] = useState('');
+	// const [date, setDate] = useState('');
 
 	// console.log('Events:\n', events);
 
@@ -120,13 +121,13 @@ const Home: React.FC = () => {
 	useEffect(() => {
 		const fetchExpenses = async () => {
 			try {
-				const data = await getExpenses();
-				console.log(data);
+				const expenses = await getExpenses();
+				console.log('Fetched expenses:', expenses);
 				setSelectedEvent((prevEvent) => {
 					if (!prevEvent) return null;
 					return {
 						...prevEvent,
-						expenses: [...prevEvent.expenses, ...data], }
+						expenses: [...prevEvent.expenses, ...expenses], }
 					});
 				} catch (error) {
 					console.log('Error fetching expenses:', error);
@@ -134,6 +135,19 @@ const Home: React.FC = () => {
 
 		}
 		fetchExpenses();
+	}, []);
+
+	useEffect(() => {
+		const fetchEvents = async () => {
+			try {
+				const events = await getEvents();
+				console.log('Fetched events:', events);
+				setEvents(events);
+			} catch (error) {
+				console.log('Error fetching events:', error);
+			}
+		};
+		fetchEvents();
 	}, []);
 
 
@@ -172,20 +186,28 @@ const Home: React.FC = () => {
 	};
 
 
-	const handleAddEvent = () => {
-		const tempId =
-			events.length > 0
-			? Math.max(...events.map(event => event.id)) + 1
-			: 1;
+	const handleAddEvent = async () => {
+		// const tempId =
+		// 	events.length > 0
+		// 	? Math.max(...events.map(event => event.id)) + 1
+		// 	: 1;
 
-			const newEvent = {
-			id: tempId,
+		const newEvent = {
+			// id: tempId,
 			description: eventName,
 			expenses: [],
 			users: participants,
-			date: new Date(),
+			// date: new Date(),
 		};
-		setEvents(prevEvents => [...prevEvents, newEvent]);
+
+		try {
+			const createdEvent = await createEvent(newEvent);
+			console.log('createdEvent:', createdEvent);
+			setEvents(prevEvents => [...prevEvents, createdEvent]);
+		} catch (error) {
+			console.error('Error creating event:', error);
+		}
+
 	};
 
 	const handleDeleteEvent = (eventId: number) => {

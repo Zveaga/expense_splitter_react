@@ -52,10 +52,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 			return;
 		}
 
-		const tempId =
-			event.expenses.length > 0
-				? Math.max(...event.expenses.map(expense => expense.id)) + 1
-				: 1;
+		// const tempId =
+		// 	event.expenses.length > 0
+		// 		? Math.max(...event.expenses.map(expense => expense.id)) + 1
+		// 		: 1;
 
 		const newExpense = {
 			// id: tempId,
@@ -74,7 +74,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 	
 			onAddExpense(createdExpense);
 			setDescription('');
-			setAmount('');
+			setAmount('');	
 			setDate('');
 			setPaidBy([]);
 		} catch (error) {
