@@ -14,7 +14,7 @@ export default class Event {
 	@JoinTable()
 	expenses?: Expense[];
 
-	@ManyToMany(() => User)
+	@ManyToMany(() => User, (user) => user.events)
 	@JoinTable()
 	users!: User[];
 

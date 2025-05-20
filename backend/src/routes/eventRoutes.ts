@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
 	const eventRepository = AppDataSource.getRepository(Event);
+	console.log('Event before post req:', req.body);
 	const newEvent = eventRepository.create(req.body);
 	const result = await eventRepository.save(newEvent);
 	res.json(result); 

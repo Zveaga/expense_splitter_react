@@ -10,8 +10,8 @@ export const getIdByUserName = (users: User[], name: string) : number => {
 	return user ? user.id : -1;
 };
 
-export const createUserFromName = (name: string): User => {
-	const id = Date.now();
+export const createUserFromName = (name: string, id: number): User => {
+	// const id = Date.now();
 	
 	return {
 		id,

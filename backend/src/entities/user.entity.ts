@@ -13,4 +13,6 @@ export default class User {
 	@ManyToMany(() => Event, (event) => event.users)
     events!: Event[];
 
+	@ManyToMany(() => Expense, (expense) => expense.participants)
+    expenses!: Expense[];
 }

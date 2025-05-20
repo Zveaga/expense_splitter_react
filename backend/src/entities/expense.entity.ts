@@ -20,7 +20,7 @@ export default class Expense {
 	@Column('json')
 	paidBy!: { userId: number; amount: number }[];
 
-	@ManyToMany(() => User)
+	@ManyToMany(() => User, (user) => user.expenses)
 	@JoinTable()
 	participants!: User[];
 

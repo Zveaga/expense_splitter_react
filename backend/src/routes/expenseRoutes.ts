@@ -3,12 +3,13 @@ import { AppDataSource } from "../data-source";
 import Expense from '../entities/expense.entity'
 import User from "../entities/user.entity";
 import Event from "../entities/event.entity";
+import { In } from "typeorm";
 
 const router = Router();
 
 router.get('/', async (req, res) => {
 	const expenseRepository = AppDataSource.getRepository(Expense);
-	const expenses = await expenseRepository.find({ relations: ['participants',] });
+	const expenses = await expenseRepository.find({ relations: ['participants', 'event'] });
 	res.json(expenses);
 });
 
@@ -17,34 +18,45 @@ router.post('/', async (req: Request, res: Response) => {
 	const userRepository = AppDataSource.getRepository(User);
 	const eventRepository = AppDataSource.getRepository(Event);
 
+	console.log('Expense before post req:', req.body);
+
 	try {
-        const { description, amount, paidBy, participants, eventId } = req.body;
-		// Resolve participants to User entities
-		const participantEntities = await userRepository.findByIds(participants);
-		// if (participantEntities.length !== participants.length) {
-		// 	return res.status(400).json({ error: "Some participants do not exist" });
-		// }
-		if (!participantEntities) {
-			throw new Error("Some participants do not exist");
+		const { description, amount, paidBy, participants, eventId } = req.body;
+		if (!description || !amount || !paidBy || !participants || !eventId) {
+			res.status(400).json({ error: "Missing required fields to create expense" });
+			return;
+        }
+
+		// const participantEntities = await userRepository.find({ where: { id: In(participants) }, });
+        // if (participantEntities.length !== participants.length) {
+        //     res.status(400).json({ error: "Some participants do not exist" });
+        //     return;
+        // }
+
+		const paidByUserIds = paidBy.map((entry: { userId: number }) => entry.userId);
+		const paidByUsers = await userRepository.find({ where: { id: In(paidByUserIds) } });
+
+		if (paidByUsers.length !== paidByUserIds.length) {
+		    res.status(400).json({ error: "Some users in paidBy do not exist" });
+		    return;
 		}
-		
 
-		// Resolve the event
-		// const eventEntity = await eventRepository.findOne({ where: { id: Number(eventId) } });
+		const eventEntity = await eventRepository.findOne({ where: { id: Number(eventId) } });
 		// console.log("eventId:", eventId);
-		// console.log("eventEntity:", eventEntity);
+		console.log("eventEntity:", eventEntity);
 
-		// if (!eventEntity) {
-		// 	throw new Error("Event does not exist");
-		// }
+		if (!eventEntity) {
+			res.status(400).json({ error: "Event does not exist" });
+			return;
+		}
 
         // Create and save the expense
         const newExpense = expenseRepository.create({
             description,
             amount,
-            paidBy,
-            participants: participantEntities,
-            // event: eventEntity,
+            paidBy: paidBy,
+            participants,
+            event: eventEntity,
         });
 
 		console.log('newExppense', newExpense);

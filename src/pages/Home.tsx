@@ -6,6 +6,8 @@ import EventDetails from '../components/EventDetails.tsx';
 import { createUserFromName } from '../utils/userUtils.ts';
 import { getExpenses, createExpense } from '../services/expenseService.ts';
 import { getEvents, createEvent } from '../services/eventService.ts';
+import { getUsers, createUser, deleteUser } from '../services/userService.ts';
+
 
 /*import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -202,7 +204,7 @@ const Home: React.FC = () => {
 
 		try {
 			const createdEvent = await createEvent(newEvent);
-			console.log('createdEvent:', createdEvent);
+			// console.log('createdEvent:', createdEvent);
 			setEvents(prevEvents => [...prevEvents, createdEvent]);
 		} catch (error) {
 			console.error('Error creating event:', error);
@@ -219,10 +221,36 @@ const Home: React.FC = () => {
 	// 	if (!event) return;
 	// };
 
-	const handleAddUserToEvent = (name: string) => {
-		const newUser = createUserFromName(name);
-		setParticipants(prevState => [...prevState, newUser]) 
+	
+	// const handleCreateUser = (name: string) => {
+	// 	const newUser = {
+	// 		name: name
+	// 	};
+		
+	// 	try {
+	// 		const createdUser = createUser(newUser);
 
+
+	// 	} catch (error) {
+	// 		console.error('Error creating user:', error);
+	// 	}
+
+
+		
+		
+	// };
+
+	const handleAddUserToEvent = async (name: string) => {
+		const newUser = {
+			name: name,
+		};
+		
+		try {
+			const createdUser = await createUser(newUser);
+			setParticipants(prevState => [...prevState, createdUser]) 
+		} catch (error) {
+			console.error('Error creating user:', error);
+		}
 	}
 	//------------UI child components of Home ------------//
 	
