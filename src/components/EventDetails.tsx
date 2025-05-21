@@ -58,13 +58,12 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 		// 		: 1;
 
 		const newExpense = {
-			// id: tempId,
 			description: description,
 			amount: parseFloat(amount),
 			paidBy: paidBy,
 			participants: users,
-			// date: new Date(),
 			eventId: event.id,
+			// date: new Date(),
 		};
 
 

@@ -36,71 +36,6 @@ const Dashboard: React.FC = () => {
 export default Dashboard;
 */
 
-const user1: User = {
-	id: 1,
-	name: 'Alice',
-};
-
-const user2: User = {
-	id: 2,
-	name: 'Bob',
-};
-
-
-const user3: User = {
-	id: 3,
-	name: 'Rar',
-};
-
-const users = [user1, user2, user3];
-
-// const expense1: Expense = {
-//    id: 1,
-//    description: 'Dinner',
-//    amount: 1000,
-//    paidBy: [{ userId: user1.id, amount: 1000 }],
-//    participants: [ user1, user2, ],
-// //    date: new Date(),
-// };
-
-// const expense2: Expense = {
-//    id: 2,
-//    description: 'Uber ride',
-//    amount: 1000,
-//    paidBy: [
-// 		{ userId: user1.id, amount: 1000 },
-// 		// { userId: user2.id, amount: 10 },
-// 		// { userId: user1.id, amount: 10 },
-// 	],
-//    participants: [ user1, user2 ],
-// //    date: new Date(),
-// };
-
-// export const expenses = [expense1, expense2, ];
-
-const sampleEvents: Event[] = [
-	{
-		id: 1,
-		description: 'ski trip',
-		expenses: [],
-		users: [user1, user2],
-	},
-	{
-		id: 2,
-		description: 'greece',
-		expenses: [],
-		users: [user1, user2],
-		},
-	{
-		id: 3,
-		description: 'patagonia',
-		expenses: [],
-		users: [user1, user2],
-		},
-];
-
-
-///////////////////////////////////////////////////////////////////////////
 const Home: React.FC = () => {
 	const theme = useTheme();
 	// const [selectedEventId, setSelectedEventId] = useState<number>(0);
@@ -111,33 +46,32 @@ const Home: React.FC = () => {
 	const [eventName, setEventName] = useState('');
 	const [participants, setParticipants] = useState<User[]>([]);
 	const [participantInput, setParticipantInput] = useState<string>('');
-	// const [date, setDate] = useState('');
 
-	// console.log('Events:\n', events);
+	// const [date, setDate] = useState('');
 
 	// const selectedEvent = useMemo(() => {
 	// 	return events.find(event => event.id === selectedEventId);
 	// }, [events, selectedEventId]);
 
 
-	useEffect(() => {
-		const fetchExpenses = async () => {
-			try {
-				const expenses = await getExpenses();
-				console.log('Fetched expenses:', expenses);
-				setSelectedEvent((prevEvent) => {
-					if (!prevEvent) return null;
-					return {
-						...prevEvent,
-						expenses: [...prevEvent.expenses, ...expenses], }
-					});
-				} catch (error) {
-					console.log('Error fetching expenses:', error);
-				}
+	// useEffect(() => {
+	// 	const fetchExpenses = async () => {
+	// 		try {
+	// 			const expenses = await getExpenses();
+	// 			console.log('Fetched expenses:', expenses);
+	// 			setSelectedEvent((prevEvent) => {
+	// 				if (!prevEvent) return null;
+	// 				return {
+	// 					...prevEvent,
+	// 					expenses: [...prevEvent.expenses, ...expenses], }
+	// 				});
+	// 			} catch (error) {
+	// 				console.log('Error fetching expenses:', error);
+	// 			}
 
-		}
-		fetchExpenses();
-	}, []);
+	// 	}
+	// 	fetchExpenses();
+	// }, []);
 
 	useEffect(() => {
 		const fetchEvents = async () => {
@@ -155,7 +89,6 @@ const Home: React.FC = () => {
 
 	//------------Event Handlers------------//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
-		// console.log(`Event (${event.description}) clicked!`);
 		e.preventDefault();
 		setSelectedEvent(event);
 	};
@@ -173,18 +106,14 @@ const Home: React.FC = () => {
 	const handleAddExpenseToEvent = async (newExpense: Expense) => {
 		if (!selectedEvent) return;
 
-		// try {
-		// 	const createdExpense = await createExpense(newExpense);
-			const updatedEvent = {
-				...selectedEvent,
-				expenses: [...selectedEvent.expenses, newExpense]
-			};
-			setSelectedEvent(updatedEvent);
-			setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
-			
-		// } catch(error) {
-		// 	console.error('Error creating expense:', error);
-		// }
+		const updatedEvent = {
+			...selectedEvent,
+			expenses: [...selectedEvent.expenses, newExpense]
+		};
+
+		setSelectedEvent(updatedEvent);
+		setEvents(events.map(event => event.id === updatedEvent.id ? updatedEvent : event));
+		
 	};
 
 
@@ -221,24 +150,6 @@ const Home: React.FC = () => {
 	// 	if (!event) return;
 	// };
 
-	
-	// const handleCreateUser = (name: string) => {
-	// 	const newUser = {
-	// 		name: name
-	// 	};
-		
-	// 	try {
-	// 		const createdUser = createUser(newUser);
-
-
-	// 	} catch (error) {
-	// 		console.error('Error creating user:', error);
-	// 	}
-
-
-		
-		
-	// };
 
 	const handleAddUserToEvent = async (name: string) => {
 		const newUser = {

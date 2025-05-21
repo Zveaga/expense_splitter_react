@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
 	const eventRepository = AppDataSource.getRepository(Event);
-	const events = await eventRepository.find({ relations: ['expenses', 'users'] });
+	const events = await eventRepository.find({ relations: ['expenses', 'expenses.participants', 'users'] });
 	res.json(events);
 });
 

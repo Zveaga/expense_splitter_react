@@ -27,12 +27,6 @@ router.post('/', async (req: Request, res: Response) => {
 			return;
         }
 
-		// const participantEntities = await userRepository.find({ where: { id: In(participants) }, });
-        // if (participantEntities.length !== participants.length) {
-        //     res.status(400).json({ error: "Some participants do not exist" });
-        //     return;
-        // }
-
 		const paidByUserIds = paidBy.map((entry: { userId: number }) => entry.userId);
 		const paidByUsers = await userRepository.find({ where: { id: In(paidByUserIds) } });
 
@@ -59,9 +53,9 @@ router.post('/', async (req: Request, res: Response) => {
             event: eventEntity,
         });
 
-		console.log('newExppense', newExpense);
 		const result = await expenseRepository.save(newExpense);
-		console.log('result', result);
+		console.log('newExppense', result);
+		// console.log('result', result);
 		res.json(result); 
 	} catch (error) {
 		console.error(error);
