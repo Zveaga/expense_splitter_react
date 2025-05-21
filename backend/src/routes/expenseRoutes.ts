@@ -44,7 +44,6 @@ router.post('/', async (req: Request, res: Response) => {
 			return;
 		}
 
-        // Create and save the expense
         const newExpense = expenseRepository.create({
             description,
             amount,
@@ -62,5 +61,30 @@ router.post('/', async (req: Request, res: Response) => {
         res.status(500).json({ error: "Internal server error" });
 	}
 });
+
+
+router.delete('/:id', async (req, res) => {
+	const expenseRepository = AppDataSource.getRepository(Expense);
+	const { id } = req.params;
+
+	try {
+		const expense = await expenseRepository.findOne({ 
+			where: {id: Number(id)},
+			relations: ['participants', 'event'],
+		});
+		if (!expense) {
+			res.status(400).json({ error: "Expense does not exist" });
+			return;
+		}
+
+		await expenseRepository.remove(expense);
+		res.status(200).json({ message: 'Expense deleted successfully' })
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal server error' });
+	}
+
+});
+
 
 export default router

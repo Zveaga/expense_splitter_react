@@ -6,6 +6,7 @@ import { getUserNameById } from '../utils/userUtils.ts';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getTotalSpent } from '../utils/eventUtils.ts';
 import { createExpense, getExpenses } from '../services/expenseService.ts';
+import { deleteExpense } from '../services/expenseService.ts';
 
 interface EventDetailsProps {
 	event: Event;
@@ -76,6 +77,28 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 
 	};
 
+	const handleDeleteExpense = (expenseId: number) => {
+		if (!event) return;
+
+		try {
+			deleteExpense(expenseId);
+			const updatedExpenses = event.expenses.filter(expense => expense.id !== expenseId);
+			setSelectedEvent({ ...event, expenses: updatedExpenses });
+		
+			// setSelectedEvent((prevState) => {
+			// 	if (!prevState) return null;
+			// 	return {
+			// 		...prevState,
+			// 		expenses: updatedExpenses,
+			// 	};
+
+			// });
+
+		} catch (error) {
+			console.error('Error deleting expense:', error);
+		}
+	};
+
 	const handleExpenseClick = (expense: Expense) => {
 		setSelectedExpense(expense);
 		setOpenExpenseModal(true);
@@ -105,18 +128,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 		setPaidBy(updated);
 	};
 
-	const handleDeleteExpense = (expenseId: number) => {
-		if (!event) return;
-		const updatedExpenses = event.expenses.filter(expense => expense.id !== expenseId);
-		setSelectedEvent({ ...event, expenses: updatedExpenses });
-		// setSelectedEvent((prevState) => {
-		// 	if (!prevState) return null;
-		// 	return {
-		// 		...prevState,
-		// 		expenses: updatedExpenses,
-		// 	};
-		// });
-	};
+
 
 	type Transaction = {
 		from: number;

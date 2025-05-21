@@ -7,7 +7,7 @@ import { createUserFromName } from '../utils/userUtils.ts';
 import { getExpenses, createExpense } from '../services/expenseService.ts';
 import { getEvents, createEvent } from '../services/eventService.ts';
 import { getUsers, createUser, deleteUser } from '../services/userService.ts';
-
+import { deleteEvent } from '../services/eventService.ts';
 
 /*import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -86,6 +86,20 @@ const Home: React.FC = () => {
 		fetchEvents();
 	}, []);
 
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const users = await getUsers();
+				console.log('Fetched users:', users);
+				// setUsers(users);
+			} catch (error) {
+				console.log('Error fetching users:', error);
+			}
+		};
+		fetchUsers();
+	}, []);
+
+
 
 	//------------Event Handlers------------//
 	const handleEventClick = (e: React.MouseEvent, event: Event) => {
@@ -142,7 +156,13 @@ const Home: React.FC = () => {
 	};
 
 	const handleDeleteEvent = (eventId: number) => {
-		setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
+		try {
+			deleteEvent(eventId);
+			setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
+			setSelectedEvent(null);
+		} catch (error) {
+			console.error('Error deleting event:', error);
+		}
 	};
 
 	// const handleDeleteExpense = (expenseId: number, eventId: number) => {

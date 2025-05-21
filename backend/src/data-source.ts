@@ -8,6 +8,7 @@ export const AppDataSource = new DataSource({
 	password: 'test',
 	database: 'expense_splitter',
 	synchronize: true,
+	// dropSchema: true,
 	logging: false,
 	entities: ['src/entities/*.ts'],
 });

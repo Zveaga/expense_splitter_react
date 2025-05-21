@@ -16,10 +16,10 @@ export default class Expense {
 	@Column('json')
 	paidBy!: { userId: number; amount: number }[];
 
-	@ManyToMany(() => User, (user) => user.expenses)
+	@ManyToMany(() => User, (user) => user.expenses, { onDelete: 'CASCADE' })
 	@JoinTable()
 	participants!: User[];
 
-	@ManyToOne(() => Event, (event: Event) => event.expenses)
+	@ManyToOne(() => Event, (event: Event) => event.expenses, { onDelete: 'CASCADE' })
     event!: Event;
 }

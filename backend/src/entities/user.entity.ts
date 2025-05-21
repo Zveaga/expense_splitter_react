@@ -1,4 +1,4 @@
-import { ManyToMany, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { ManyToMany, ManyToOne, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import Event from "./event.entity";
 import Expense from "./expense.entity";
 
@@ -10,9 +10,12 @@ export default class User {
 	@Column()
 	name: string = '';
 
-	@ManyToMany(() => Event, (event) => event.users)
-    events!: Event[];
+	// @ManyToMany(() => Event, (event) => event.users, { onDelete: "CASCADE" })
+    // events!: Event[];
 
-	@ManyToMany(() => Expense, (expense) => expense.participants)
+	@ManyToOne(() => Event, (events) => events.users, { onDelete: 'CASCADE' })
+    events!: Event;
+
+	@ManyToMany(() => Expense, (expense) => expense.participants, )
     expenses!: Expense[];
 }

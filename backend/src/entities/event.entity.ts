@@ -10,15 +10,28 @@ export default class Event {
 	@Column()
 	description: string = '';
 
-	@OneToMany(() => Expense, (expense) => expense.event)
-	@JoinTable()
-	expenses?: Expense[];
+	@OneToMany(() => Expense, (expense) => expense.event, { cascade: true, onDelete: 'CASCADE' })
+    expenses?: Expense[];
 
-	@ManyToMany(() => User, (user) => user.events)
-	@JoinTable()
-	users!: User[];
+	@OneToMany(() => User, (user) => user.events, { cascade: true, onDelete: 'CASCADE' })
+    users!: User[];
+
+    // @ManyToMany(() => User, (user) => user.events, { cascade: true, onDelete: "CASCADE" })
+    // @JoinTable()
+	// users!: User[];
+
+
+	
+
+	// @OneToMany(() => Expense, (expense) => expense.event)
+	// @JoinTable()
+	// expenses?: Expense[];
+
+	// @ManyToMany(() => User, (user) => user.events)
+	// @JoinTable()
+	// users!: User[];
+
 
 	// @Column()
 	// date: Date = new Date();
 }
-
