@@ -52,11 +52,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 			return;
 		}
 
-		// const tempId =
-		// 	event.expenses.length > 0
-		// 		? Math.max(...event.expenses.map(expense => expense.id)) + 1
-		// 		: 1;
-
 		const newExpense = {
 			description: description,
 			amount: parseFloat(amount),
@@ -65,7 +60,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 			eventId: event.id,
 			// date: new Date(),
 		};
-
 
 		try {
 			const createdExpense = await createExpense(newExpense);
@@ -79,9 +73,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event, onAddExpense, onDele
 		} catch (error) {
 			console.error('Error creating expense:', error);
 		}
-
-
-
 
 	};
 

@@ -17,9 +17,7 @@ export interface Expense {
 	description: string;
 	amount: number;
 	paidBy: { userId: number, amount: number }[];
-	// paidBy: PaidBy[];
 	participants: User[];
-	// date: Date;
 	eventId: number;
 }
 

@@ -27,7 +27,7 @@ router.post('/', async (req: Request, res: Response) => {
 			return;
         }
 
-		const paidByUserIds = paidBy.map((entry: { userId: number }) => entry.userId);
+		const paidByUserIds = paidBy.map((data: { userId: number }) => data.userId);
 		const paidByUsers = await userRepository.find({ where: { id: In(paidByUserIds) } });
 
 		if (paidByUsers.length !== paidByUserIds.length) {
@@ -48,7 +48,7 @@ router.post('/', async (req: Request, res: Response) => {
         const newExpense = expenseRepository.create({
             description,
             amount,
-            paidBy: paidBy,
+            paidBy,
             participants,
             event: eventEntity,
         });

@@ -13,19 +13,12 @@ export default class Expense {
 	@Column()
 	amount: number = 0;
 
-	// @ManyToMany(() => User)
-	// @JoinTable()
-	// paidBy!: { userId: number, amount: number }[];
-
 	@Column('json')
 	paidBy!: { userId: number; amount: number }[];
 
 	@ManyToMany(() => User, (user) => user.expenses)
 	@JoinTable()
 	participants!: User[];
-
-	// @Column()
-	// date: Date = new Date();
 
 	@ManyToOne(() => Event, (event: Event) => event.expenses)
     event!: Event;

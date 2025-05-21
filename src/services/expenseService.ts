@@ -3,9 +3,9 @@ import { Expense, User } from '../types/interfaces';
 
 const API_URL = 'http://localhost:5000/api/expenses';
 
-export const getExpenses = async (): Promise<Expense[]> => {
+export const getExpenses = async () => {
 	const response = await axios.get(API_URL);
-	console.log('response backend (expenses): ', response.data);
+	// console.log('response backend (expenses): ', response.data);
 	return response.data;
 }
 
